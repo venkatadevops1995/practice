@@ -1,0 +1,7 @@
+voting app
+
+created using python(exposed to customers and they can open and cast their vote)     voting app
+whatever choice they are selecting in python application that is registered immediately in a in-memory(temporary database) called as in-memory database called redis  in-memory database
+from this redis data is filtered via aaplication which is designed by developers using .net  worker application
+once data is filtered it stores that data permanently in another database which is created using postgres database(we call that as persistent database)
+from this pg db finally results will be viewed on application which we will be setup using nodejs
