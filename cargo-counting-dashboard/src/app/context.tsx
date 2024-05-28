@@ -11,7 +11,7 @@ import useWebSocketConnectionHook from "./hooks/useWebsocketHook";
 import { type POResponseType, WebsocketEventEnum } from "~/pages/api/api-typings";
 
 export type GlobalState = {
-  liveCountData: POResponseType;
+  liveCountData: POResponseType | null;
 };
 
 export type ApplicationType = {

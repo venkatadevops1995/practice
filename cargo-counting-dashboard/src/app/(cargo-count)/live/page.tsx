@@ -31,7 +31,7 @@ const CargoLivePage =  () => {
   }
 
   useEffect(()=> {
-     setCargoEvent(state.liveCountData)
+     setCargoEvent(state?.liveCountData ?? undefined)
   }, [state.liveCountData])
 
 

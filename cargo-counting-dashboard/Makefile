@@ -29,11 +29,15 @@ ip:
 	@echo $(call get_ip)
 
 #! Next.js Commands
-run:
+run-dev:
 	@npm run dev -- -H $(SERVER_HOST_IP) -p $(SERVER_PORT)
 
 build:
 	@npm run build
+
+run-prod:
+	@npm run start -- -H $(SERVER_HOST_IP) -p $(SERVER_PORT)
+
 
 rmn:
 	rm -rf node_modules
