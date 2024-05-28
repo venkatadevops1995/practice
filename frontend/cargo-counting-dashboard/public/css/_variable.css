@@ -1,0 +1,26 @@
+:root {
+    
+    /* Overlayes */
+    --overlay-bg:#7ECC29;
+    --overlay-bg-alpha: #E2F4CE;
+
+    /* Text */
+    --app-text-clr: #191919;
+
+    /* Buttons */
+    --app-btn-bg: #7ECC29;
+    --app-btn-cancel: #E87474;
+    --app-btn-close:#A1A1A1;
+
+    /* cards */
+    --app-card-body: #FFFFFF;
+    --app-card-header:#D8D8D8;
+
+
+    /* drawers */
+    --app-drawer-bg:#E2F4CE;
+
+
+    /* input fields */
+    --app-input-bg:#ffffff;
+}
