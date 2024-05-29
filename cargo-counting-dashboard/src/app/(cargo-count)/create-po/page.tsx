@@ -11,11 +11,11 @@ import useDeviceType from '~/app/hooks/useDeviceTypeHook'
 import { useRouter } from 'next/navigation'
 import { useApplicationContext } from '~/app/context'
 import useCheckCargoLiveFromClient from '../cargo-utils/cargo-live-client'
-import { WebsocketEventEnum } from '~/pages/api/api-typings'
 
-const CreatePOPage = () => {
+const CreatePOPage =  () => {
+   
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  // void useCheckCargoLiveFromClient()
+  void useCheckCargoLiveFromClient()
 
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
     boolean
@@ -87,9 +87,9 @@ const CreatePOPage = () => {
         )}
         {shouldIconVisible && (
           <div className="flex w-full justify-end absolute bottom-[35px] right-[31px]">
-            <div className="relative h-[50px] w-[50px] bg-[var(--overlay-bg)] rounded-[12px]">
+            <div   onClick={onHandleSlide} className="relative h-[50px] w-[50px] bg-[var(--overlay-bg)] rounded-[12px]">
               <Image
-                onClick={onHandleSlide}
+              
                 className="absolute w-[31px] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] cursor-pointer"
                 src="/images/cargo_icon.svg"
                 alt="cargo"

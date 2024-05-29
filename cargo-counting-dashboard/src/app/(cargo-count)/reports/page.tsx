@@ -13,6 +13,7 @@ const prisma = new PrismaClient();
 
 
 const ReportPage = async () => { 
+  await new Promise(r=>setTimeout(r,10000))
   //  await useCheckCargoLiveFromServer()
 
 

@@ -1,5 +1,5 @@
-import { Spinner } from "@chakra-ui/react";
+import GlobalLoader from '~/app/components/GlobalLoader'
 
 export default function Loading() {
-  return <Spinner color='green.500' size={'lg'} placeSelf={'center'} />
+  return <GlobalLoader />
 }
