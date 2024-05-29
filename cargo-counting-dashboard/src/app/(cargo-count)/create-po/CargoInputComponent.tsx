@@ -19,8 +19,9 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const po_number = e?.target?.value
     setFormValid(!po_number)
+    
   }
-
+  
   const onBackButtonClicked = ()=> {
     close('back');
   }
@@ -100,4 +101,4 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
   )
 }
 
-export default React.memo(CargoInputComponent)
+export default CargoInputComponent
