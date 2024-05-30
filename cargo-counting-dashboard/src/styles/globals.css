@@ -3,6 +3,7 @@
 @import '/css/_table.css';
 @import '/css/_fonts.css';
 @import '/css/_loaders.css';
+@import '/css/_buttons.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

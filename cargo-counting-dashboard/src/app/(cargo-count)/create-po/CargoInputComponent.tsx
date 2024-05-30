@@ -1,10 +1,11 @@
 'use client'
 
-import { Input, Image, Button } from '@chakra-ui/react'
+import { Input, Image, Button, Box } from '@chakra-ui/react'
 import { createPoNumberAction } from './FormActions/CreatePoAction'
 import { useFormState } from 'react-dom'
 import { type ChangeEvent, useState } from 'react'
 import React from 'react'
+import { motion } from 'framer-motion'
 
 const initialState = {
   message: '',
@@ -28,6 +29,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
 
   return (
     <>
+   
       <form action={action}>
         <div className="mobile:rounded-tl-[24px] mobile:rounded-tr-[24px] tablet:rounded-tl-[0px] tablet:rounded-tr-[0px] p-[20px] max-h-[40vh] w-full flex flex-col gap-y-[20px] justify-between overflow-auto  desktop:bg-white tablet:bg-white mobile:bg-[var(--app-card-body)]">
          {title && <div className="flex justify-between items-center">
@@ -63,6 +65,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
             height={'42px'}
             borderRadius={'8px'}
             alignSelf={'center'}
+            _hover={{background: 'var(--app-btn-bg)'}}
             bg={'var(--app-btn-bg)'}
             className={`${!isFormValid ? '' : 'no-ptr'}`}
           >
@@ -78,6 +81,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
             height={'42px'}
             borderRadius={'8px'}
             onClick={onBackButtonClicked}
+            _hover={{background: 'var(--app-btn-close)'}}
             alignSelf={'center'}
             bg={'var(--app-btn-close)'}
           >
@@ -89,6 +93,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
             height={'42px'}
             borderRadius={'8px'}
             alignSelf={'center'}
+            _hover={{background: 'var(--app-btn-bg)'}}
             bg={'var(--app-btn-bg)'}
             className={`${!isFormValid ? '' : 'no-ptr'}`}
           >
@@ -97,6 +102,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
         </div>
         </div>
       </form>
+  
     </>
   )
 }

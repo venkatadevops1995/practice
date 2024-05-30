@@ -6,14 +6,11 @@ import SearchQuery from '~/app/components/SearchQuery'
 import { PrismaClient } from '@prisma/client';
 import { type POResponseType } from '~/pages/api/api-typings';
 import TableView from './TableViw';
-import { Suspense } from 'react';
-import Loading from './loading';
 
 const prisma = new PrismaClient();
 
 
 const ReportPage = async () => { 
-  await new Promise(r=>setTimeout(r,10000))
   //  await useCheckCargoLiveFromServer()
 
 
