@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
+import DisplayTimeAgo from "~/app/components/DisplayTimeAgo";
 import { type POResponseType } from "~/pages/api/api-typings"
+
 
 const CountCard = ({liveData}:{liveData:POResponseType | undefined}) => {
 
@@ -35,6 +37,10 @@ const CountCard = ({liveData}:{liveData:POResponseType | undefined}) => {
           </span>
         </div>
       </div>
+
+      <span className="font-inter opacity-65 absolute right-8 text-[14px]">
+        <DisplayTimeAgo timestamp={getLiveData?.startAt}/>
+      </span>
     </div>
   )
 }

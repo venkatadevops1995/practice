@@ -50,12 +50,12 @@ const CargoLivePage =  () => {
 
 
   return (
-    <div className="grid w-full  overflow-hidden grid-rows-[max-content,minmax(0,1fr)]">
+    <div className="grid w-full  overflow-auto grid-rows-[max-content,minmax(0,1fr)]">
       <div className="flex h-[50px] w-full gap-x-2 items-center justify-start">
         <Image src="/images/live_icon.svg"  alt="live"/> <span> Cargo Live</span>
       </div>
       <div className="grid h-full w-full gap-y-[20px]  grid-rows-[max-content,1fr,max-content]]">
-        <div className="h-max  mobile:justify-center w-full flex text-[24px] font-[500]">
+        <div className="h-max relative mobile:justify-center w-full flex text-[24px] font-[500]">
           <CountCard  liveData={getCargoEvent}/>
         </div>
         <div className="grid w-full h-full justify-center items-center">
