@@ -85,6 +85,8 @@ prisma-migration:
 	@npx prisma migrate dev --name init
 prisma-reset-db:
 	@npx prisma db push --force-reset
+prisma-view:
+	@npm run db:studio
 
 
 

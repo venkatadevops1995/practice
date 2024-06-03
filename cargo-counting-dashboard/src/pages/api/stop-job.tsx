@@ -12,7 +12,7 @@ export default async function handler(
   res: NextApiResponseWithSocket
 ) {
  
-  const reqData:PORequestType = JSON.parse(JSON.stringify(await req.body as PORequestType));
+  const reqData:PORequestType = await req.body as PORequestType;
 
   
   const isRecordExists  = await prisma.cargoCount.findFirst({
@@ -20,10 +20,7 @@ export default async function handler(
       poNumber: reqData?.po_number
     }
   })
-  
-  if(!isRecordExists) {
-     return res.status(204).json({ message: '' })
-  }
+
   
   const record = await prisma.cargoCount.update({
   data: {
@@ -35,10 +32,9 @@ export default async function handler(
         poNumber: reqData?.po_number
     }
 })
-
-console.log(record,"hey")
-
-
-     res.socket.server.io?.emit('live-count',record);  
-     return res.status(200).json({ message: '' })
+   
+     
+console.log(record,"hey job stopped")
+     
+     return res.status(200).json({ message: 'job stopped' })
 }

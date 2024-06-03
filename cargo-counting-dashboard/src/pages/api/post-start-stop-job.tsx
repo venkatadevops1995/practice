@@ -27,13 +27,11 @@ export default async function handler(
     
 
   } catch(e) {
-     console.log("mehhhh",e)
      statusCode = 500;
      messsage = 'internal server error';
 
   }
 
-  console.log(res)
    
   res.status(statusCode).json({ message:messsage })
 }

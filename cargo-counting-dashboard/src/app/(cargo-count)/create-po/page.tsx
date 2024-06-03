@@ -10,14 +10,10 @@ import GenericCard from '~/app/components/GenericCard'
 import useDeviceType from '~/app/hooks/useDeviceTypeHook'
 import { useRouter } from 'next/navigation'
 import { useApplicationContext } from '~/app/context'
-import useCheckCargoLiveFromClient from '../cargo-utils/cargo-live-client'
 import {  motion } from 'framer-motion'
 
-const revalidate = 0;
-const dynamic = 'force-dynamic';
+
 const CreatePOPage = () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  // void useCheckCargoLiveFromClient()
 
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
     boolean

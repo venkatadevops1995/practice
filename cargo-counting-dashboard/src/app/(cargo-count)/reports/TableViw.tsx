@@ -65,7 +65,7 @@ const TableView =   ({ responseData }: { responseData: POResponseType[] }) => {
                     <Tr>
                         <Td  className='flex flex-col'>
                           <span className='font-isb'>
-                          {handleGetParsedTime(data?.startAt,'DD-MMM-YYYY')}
+                          {handleGetParsedTime(data?.startAt,'DD-MMM-YYYY')  ?? '__'}
 
                           </span>
                           <span>

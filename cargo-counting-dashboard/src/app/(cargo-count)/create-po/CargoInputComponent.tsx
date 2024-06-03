@@ -6,13 +6,15 @@ import { Input, Image, Button } from '@chakra-ui/react'
 import { type ChangeEvent, useState } from 'react'
 import React from 'react'
 import { type PORequestType } from '~/pages/api/api-typings'
-import { saveAfterJobStarted, startCountRequestHandler } from '../_RequestHandlers/create-po-request-handler'
+import { saveAfterJobStarted, startStopCountRequestHandler } from '../_RequestHandlers/create-po-request-handler'
+import { useRouter } from 'next/navigation'
 
 
 const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  , title?:string}) => {
 
   const [isFormValid, setFormValid] = useState<boolean>(false)
   const [getPo,setPo]  = useState<string>();
+  const router = useRouter()
 
   const onPoNumberInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -22,37 +24,28 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
   }
 
 
+ /**
+  * ! On Create the New Job 
+  */
   const handlePOSubmission  = async ()=> {
-  const payload =  { 
-    entrypoint: `python3sssss main.py '{\"job_id\": \"${getPo}\", \"op_type\": \"start\", \"cam_streaming_url\": \"/home/cargo_data/input_data/2024-05-25_07-40-00.mp4\", \"survey_operation_type\": \"4\"}'`,
-    runtime_env: {
-      working_dir: "http://172.16.120.62:9000/run.sh",
-      excludes: [
-        "model_data/"
-      ]
-    }
-  }
-   
-  startCountRequestHandler(payload).then(async (startResponse)=> {
-  
-    const  payload: PORequestType = {
+  //! A method has implememted to communicate with the ray pipline to stop job/start
+  startStopCountRequestHandler(getPo ?? '', 'start')?.then(async (startResponse)=> {
+    const  startPayload: PORequestType = {
       startAt: new Date().getTime()+'',
       endAt: '',
       isActive: false,
       po_number: getPo as any,
       count: 0
     }
-
-
-   if([200,201].includes(startResponse.status)) {
-        const response =    await saveAfterJobStarted(payload)
+   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+   if([200,201].includes(startResponse?.status)) {
+        const response =    await saveAfterJobStarted(startPayload)
         if([200,201].includes(response.status)) {
-           console.log("Job created successfull")
-        }
-     
+          router.push('/live')
+        }    
    }
    
-  }).catch(err=> {
+  })?.catch(err=> {
      console.log("error",err)
   })
   }

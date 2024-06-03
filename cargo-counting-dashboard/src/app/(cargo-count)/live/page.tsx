@@ -3,15 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Image } from "@chakra-ui/react";
 import CountCard from "./CountCard";
-import { type PORequestType, type POResponseType } from "~/pages/api/api-typings";
+import { WebsocketEventEnum, type PORequestType, type POResponseType } from "~/pages/api/api-typings";
 import React from "react";
 import AlertDialogBox from "../../components/Alerts";
 import { useRouter } from "next/navigation";
 import { useApplicationContext } from "~/app/context";
 import { stopJobHandler } from "../_RequestHandlers/live-request-handler";
+import { startStopCountRequestHandler } from "../_RequestHandlers/create-po-request-handler";
 
 const CargoLivePage =  () => {  
-  const  {state} = useApplicationContext()
+  const  {state,dispatch} = useApplicationContext()
   const [getCargoEvent,setCargoEvent] = useState<POResponseType>();
   const alertRef = useRef<any>(null);
   const route = useRouter();
@@ -24,24 +25,37 @@ const CargoLivePage =  () => {
      
        alertRef?.current?.onClose();
   }
+/**
+ *? After confirmation user can stop job but need to wait from ray piple response untill count will be displayed
+ *! TODO: Need to check should i wait to ray response or just direct move to again create new job
+ */
+const onHandleConfirm = async ()=> {
 
-   const onHandleConfirm = async ()=> {
-
-     const payload: PORequestType = {
-       endAt: new Date().getTime()+'',
-       isActive: false,
-       count: 0,
-       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-       po_number: getCargoEvent?.poNumber as any,
-       startAt: ""
-     }
-    
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const res =  await stopJobHandler(payload)
-    
-    route.push('/create-po')
+  
    
-
+  
+  //! A method has implememted to communicate with the ray pipline to stop job/start
+  startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '' , 'stop')?.then(async (startResponse)=> {
+    const  startPayload: PORequestType = {
+      startAt: new Date().getTime()+'',
+      endAt: new Date().getTime()+'',
+      isActive: false,
+      po_number:  getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '',
+      count: 0
+    }
+   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+   if([200,201].includes(startResponse.status)) {
+        const response =    await stopJobHandler(startPayload)
+        if([200,201].includes(response.status)) {
+          //! Update the Context Store
+              dispatch({type: WebsocketEventEnum.LIVE_COUNT, payload: startPayload})
+            //! After Navigate to the Create new Job
+              route.push('/create-po')
+        }    
+   }
+  })?.catch(err=> {
+     console.log("error",err)
+  })
    }
 
   useEffect(()=> {
@@ -70,6 +84,8 @@ const CargoLivePage =  () => {
             height={'54px'}
             borderRadius={'50px'}
             bg={'var(--app-btn-cancel)'}
+            _hover={{background: 'var(--app-btn-cancel)'}}
+
             className={`${true ? '' : 'no-ptr'}`}
           >
             Stop

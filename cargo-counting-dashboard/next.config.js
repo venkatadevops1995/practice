@@ -8,7 +8,7 @@ await import("./src/env.js");
 const config = {
  experimental: {
     staleTimes: {
-      dynamic: 0,
+      dynamic: 10000,
       static: 0,
     },
   },

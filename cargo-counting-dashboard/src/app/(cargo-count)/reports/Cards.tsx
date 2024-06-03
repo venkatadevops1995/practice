@@ -26,15 +26,15 @@ const TransctionCard = ({data}:{data: POResponseType})=> {
               </span>
            </div>
            </div>
-           <div className="text-[11px] font-medium flex text-left justify-start w-[60%]  font-isb">{data?.poNumber}</div>
+           <div className="text-[11px] font-medium flex text-left justify-start w-[60%]  ml-[5px] font-isb">{data?.poNumber}</div>
            <div className="flex flex-col pt-[2px] pb-[2px]">
               <div className="flex flex-col">
                  <span className="text-[11px] opacity-50  font-isb">Start Time</span>
-                 <span className="text-[11px] font-bold  font-isb">{handleGetParsedTime(data?.startAt)}</span>
+                 <span className="text-[11px] block font-bold  w-max font-isb">{handleGetParsedTime(data?.startAt) ?? '__'}</span>
               </div>
               <div className="flex flex-col">
                <span className="text-[11px] opacity-50  font-isb">End Time</span>
-                 <span className="text-[11px] font-bold  font-isb">{handleGetParsedTime(data?.endAt)}</span>
+                 <span className="text-[11px] block font-bold w-max font-isb">{handleGetParsedTime(data?.endAt) ?? '__'}</span>
               </div>
            </div>
         </div>

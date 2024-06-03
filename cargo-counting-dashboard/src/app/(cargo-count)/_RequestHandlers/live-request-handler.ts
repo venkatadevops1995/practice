@@ -3,7 +3,7 @@ import { type PORequestType } from "~/pages/api/api-typings";
 
  const stopJobHandler = async (payload: PORequestType)=> { 
 
-  axios.post('/api/stop-job/', payload)
+  return axios.post('/api/stop-job/', payload)
   .then(function (response) {
      return response;
   })
