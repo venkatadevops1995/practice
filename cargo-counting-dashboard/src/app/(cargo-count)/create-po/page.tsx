@@ -13,6 +13,8 @@ import { useApplicationContext } from '~/app/context'
 import useCheckCargoLiveFromClient from '../cargo-utils/cargo-live-client'
 import {  motion } from 'framer-motion'
 
+const revalidate = 0;
+const dynamic = 'force-dynamic';
 const CreatePOPage = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   // void useCheckCargoLiveFromClient()

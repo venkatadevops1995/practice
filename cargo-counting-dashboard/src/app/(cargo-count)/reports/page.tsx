@@ -20,11 +20,14 @@ const ReportPage = async () => {
 }) as unknown as POResponseType[];
     
 
+   
+
+
   return (
     <>
       <div className="grid w-full grid-rows-[max-content,minmax(0,1fr)] gap-y-[10px]">
         <div className="flex  mobile:flex-col tablet:flex-row  tablet:justify-between desktop:flex-row desktop:justify-between">
-          <GoBackBtn title='Reports' path='create-po'/>
+          <GoBackBtn title={'Reports'} path={"/create-po"}/>
           <div className="desktop:w-[400px] cursor-pointer flex items-center">
             <SearchQuery/>
           </div>
@@ -40,7 +43,7 @@ const ReportPage = async () => {
              <TransactionList  responseData={getPoCounts}/>
           </div>
           
-          <div className='mobile:hidden desktop:block tablet:block'>
+          <div className='mobile:hidden desktop:block tablet:block h-[calc(100dvh-90px)]'>
               <TableView responseData={getPoCounts}/>
           </div>
 

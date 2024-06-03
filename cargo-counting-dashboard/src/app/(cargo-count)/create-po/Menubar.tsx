@@ -22,7 +22,8 @@ export default function MenuBar() {
   }
 
   const onNavigate = (path: string) => {
-    router.push(path, { scroll: true })
+    
+    router.push(path)
   }
 
   return (
@@ -49,7 +50,7 @@ export default function MenuBar() {
           <div className="pl-2 pt-4 m-auto w-[80%] h-full">
             <div
               className="flex gap-x-[10px] cursor-pointer"
-              onClick={() => onNavigate('reports')}
+              onClick={() => onNavigate('/reports')}
             >
               <Image sizes="md" src="/images/report_icon.svg" alt="report" />
               <span>Reports</span>

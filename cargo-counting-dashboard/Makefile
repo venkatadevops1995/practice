@@ -7,6 +7,19 @@ define get_ip
 	$(shell hostname -I | cut -d' ' -f1)
 endef
 
+# Load environment variables from .env file
+include .env
+
+kill_PORT:
+	@PID=$$(netstat -plten | awk '/172.16.120.62/ && /\/next-server/ {print $$9}' | cut -d'/' -f1); \
+	if [ ! -z "$$PID" ]; then \
+		kill -9 $$PID; \
+		echo "Killing process $$PID"; \
+	else \
+		echo "No process found"; \
+	fi
+
+
 generate_build_no := \
 		current_build_no=$$(grep -oP 'export const APP_BUILD_NO = \K\d+' src/app/utils/build_no.ts); \
 		new_build_no=$$((current_build_no + 1)); \
@@ -18,11 +31,9 @@ generate_build_no := \
 NODE_VERSION=18
 NEXT_VERSION=14.2.1
 
-# Load environment variables from .env file
-include .env.example
 
 # Targets
-.PHONY: ip run build rmn i test lint dc-up dc-down
+.PHONY: ip run build rmn i test lint dc-up dc-down kill_PORTS
 
 #! System Commands
 ip:

@@ -58,7 +58,7 @@ const TableView =   ({ responseData }: { responseData: POResponseType[] }) => {
             <Th>Cargo Count</Th>
           </Tr>
         </Thead>
-        <Tbody className='overflow-auto h-full w-full'>
+        <Tbody className='overflow-auto h-full w-full pb-[10px]'>
          {
             getFilteredData?.map(data=> {
                 return (          
