@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "PoCounts" (
+CREATE TABLE "CargoCount" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "poNumber" TEXT NOT NULL DEFAULT '',
     "startAt" TEXT,
@@ -9,4 +9,4 @@ CREATE TABLE "PoCounts" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "PoCounts_poNumber_key" ON "PoCounts"("poNumber");
+CREATE UNIQUE INDEX "CargoCount_poNumber_key" ON "CargoCount"("poNumber");

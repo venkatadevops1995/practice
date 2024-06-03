@@ -1,15 +1,17 @@
 import { useRouter } from "next/navigation";
-import { useLayoutEffect } from "react";
+import { useCallback } from "react";
 
 const useCheckCargoLiveFromClient =   ()=> {
+  
 
+   console.log("Me runnin...")
    
 
       const router = useRouter();
 
       
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      useLayoutEffect(()=> {
+      useCallback(()=> {
         const fun = async ()=> {
             const response =    (await fetch('/api/get-live-data'))
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -25,7 +27,7 @@ const useCheckCargoLiveFromClient =   ()=> {
 
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         fun()
-      })
+      }, [])
 
     }
 

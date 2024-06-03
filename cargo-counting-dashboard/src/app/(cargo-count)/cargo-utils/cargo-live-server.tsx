@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 const useCheckCargoLiveFromServer = async ()=> {
   
-        const getPoCount = await prisma.poCounts.findFirst({
+        const getPoCount = await prisma.cargoCount.findFirst({
         where: {
             isActive: true
         }

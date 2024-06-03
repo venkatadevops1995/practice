@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest } from 'next'
 import { type NextApiResponseWithSocket, type PORequestType } from './api-typings';
@@ -11,42 +12,41 @@ export default async function handler(
   res: NextApiResponseWithSocket
 ) {
  
-  const reqData:PORequestType = req.body as PORequestType;
+  const reqData:PORequestType =  req.body as PORequestType
 
-  // check if popWas Already Exists 
-  const isRecordExists  = await prisma.poCounts.findFirst({
-    where: {
-      poNumber : reqData?.po_number ?? null
-    }
-  })
-  if(isRecordExists) { 
-    const countRecord = await prisma.poCounts.update({
-        where: {
-          id: isRecordExists.id,
-        },
-      data: {
-      startAt: reqData?.startAt,
-      endAt: reqData?.endAt,
-      poNumber: reqData?.po_number ?? null,
-      isActive: reqData?.endAt===null || reqData?.endAt===undefined,
-      count: reqData?.count
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  
+   const isRecordExists  = await prisma?.cargoCount?.findFirst({
+      where: {
+        poNumber : reqData?.po_number
+      }
+    })
+
+   
+  const record = await prisma?.cargoCount?.upsert({
+    create: {
+    startAt: reqData?.startAt,
+        endAt: reqData?.endAt,
+        poNumber: reqData?.po_number,
+        isActive: true,
+        count: +reqData?.count
+     },
+  update: {
+     startAt: reqData?.startAt,
+        endAt: reqData?.endAt,
+        poNumber:reqData?.po_number,
+        count: +reqData?.count,
+        isActive: reqData?.endAt !== null || reqData.endAt!=='',
   },
-});
-  res.socket.server.io?.emit('live-count',countRecord);  
-  return res.status(200).json({ message: countRecord })
-
+  where: {
+    id: isRecordExists?.id,
+    poNumber: reqData?.po_number
   }
-  // If not present then add new record
-  const countRecord = await prisma.poCounts.create({
-  data: {
-   startAt: reqData?.startAt,
-   endAt: reqData?.endAt,
-   poNumber: reqData?.po_number ?? null,
-   isActive: reqData?.endAt===null || reqData?.endAt===undefined,
-   count: reqData?.count
-  },
-});
+  
+})
 
-  res.socket.server.io?.emit('live-count',countRecord);
-  res.status(200).json({ message: countRecord })
+
+     res.socket.server.io?.emit('live-count',record);  
+     return res.status(200).json({ message: record })
 }

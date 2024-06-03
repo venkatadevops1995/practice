@@ -10,9 +10,9 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model PoCounts {
+model CargoCount {
     id        Int      @id @default(autoincrement())
-    poNumber  String @default("") @unique()
+    poNumber  String  @unique()
     startAt String ?
     endAt  String ?
     count Int

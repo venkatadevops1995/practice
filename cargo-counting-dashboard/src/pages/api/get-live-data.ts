@@ -12,7 +12,7 @@ export default async function handler(
 ) {
  
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const countRecord = await prisma.poCounts.findFirst({
+  const countRecord = await prisma.cargoCount.findFirst({
     where: {
        isActive: true
     }

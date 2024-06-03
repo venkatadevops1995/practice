@@ -16,7 +16,7 @@ const ReportPage = async () => {
 
   
 
-      const getPoCounts = await prisma.poCounts.findMany({
+      const getPoCounts = await prisma.cargoCount.findMany({
 }) as unknown as POResponseType[];
     
 

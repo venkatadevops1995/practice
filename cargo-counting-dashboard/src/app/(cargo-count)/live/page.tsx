@@ -3,15 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Image } from "@chakra-ui/react";
 import CountCard from "./CountCard";
-import { type POResponseType, type WebsocketEventEnum } from "~/pages/api/api-typings";
+import { type PORequestType, type POResponseType } from "~/pages/api/api-typings";
 import React from "react";
 import AlertDialogBox from "../../components/Alerts";
 import { useRouter } from "next/navigation";
-import useCheckCargoLiveFromClient from "../cargo-utils/cargo-live-client";
 import { useApplicationContext } from "~/app/context";
+import { stopJobHandler } from "../_RequestHandlers/live-request-handler";
 
 const CargoLivePage =  () => {  
-  void useCheckCargoLiveFromClient()
   const  {state} = useApplicationContext()
   const [getCargoEvent,setCargoEvent] = useState<POResponseType>();
   const alertRef = useRef<any>(null);
@@ -26,9 +25,24 @@ const CargoLivePage =  () => {
        alertRef?.current?.onClose();
   }
 
-   const onHandleConfirm = ()=> {
-       route.push('/create-po');   
-  }
+   const onHandleConfirm = async ()=> {
+
+     const payload: PORequestType = {
+       endAt: new Date().getTime()+'',
+       isActive: false,
+       count: 0,
+       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+       po_number: getCargoEvent?.poNumber as any,
+       startAt: ""
+     }
+    
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const res =  await stopJobHandler(payload)
+    
+    route.push('/create-po')
+   
+
+   }
 
   useEffect(()=> {
      setCargoEvent(state?.liveCountData ?? undefined)
@@ -98,7 +112,5 @@ const CargoLivePage =  () => {
 };
 
 export default React.memo(CargoLivePage);
-function dispatch(arg0: { type: WebsocketEventEnum; paylaod: null; }) {
-  throw new Error("Function not implemented.");
-}
+
 

@@ -15,7 +15,7 @@ import {  motion } from 'framer-motion'
 
 const CreatePOPage = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  void useCheckCargoLiveFromClient()
+  // void useCheckCargoLiveFromClient()
 
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
     boolean
