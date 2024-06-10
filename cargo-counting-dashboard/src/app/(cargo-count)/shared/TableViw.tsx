@@ -10,7 +10,6 @@ import {
   Tbody,
   Td,
 } from '@chakra-ui/react'
-import { throws } from 'assert';
 import React from 'react';
 import { useState } from 'react';
 import NoRecordsFound from '~/app/components/NoRecods';
@@ -19,27 +18,18 @@ import useQueryParamsFilterHook from '~/app/hooks/useQueryParamsFilterHooks';
 import { getFormatedTime } from '~/app/utils/timeFormatUtils';
 import { type POResponseType } from '~/pages/api/api-typings';
 
-const TableView =   ({ responseData }: { responseData: POResponseType[] }) => {
-    
-
-      
+const TableView =   ({ responseData , isActivePage = false }: { responseData: POResponseType[] , isActivePage:boolean }) => {
     const diviceType = useDeviceType()
-    
     const [getFilteredData,setFilteredData] = useState<POResponseType[]>([]);
      useQueryParamsFilterHook(responseData, 'poNumber','search',(data)=> {       
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setFilteredData(data);
     })
-
-   
     const handleGetParsedTime = (milSec:string,format:string)=> {
         
       return getFormatedTime(milSec,format)
 
-    }
-
-   
-  
+    }  
     return (
         <>
           {

@@ -1,3 +1,5 @@
+"use server";
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest } from 'next'
@@ -11,6 +13,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseWithSocket
 ) {
+
+
  
   const reqData:PORequestType = await req.body as PORequestType;
 
@@ -33,8 +37,7 @@ export default async function handler(
     }
 })
    
-     
-console.log(record,"hey job stopped")
-     
+      
+
      return res.status(200).json({ message: 'job stopped' })
 }

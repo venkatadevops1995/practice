@@ -1,3 +1,4 @@
+"use server";
 import CargoCountPage from "./(cargo-count)/page";
 export default async function HomePage() {
 

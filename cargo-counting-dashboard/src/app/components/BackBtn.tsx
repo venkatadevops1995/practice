@@ -4,17 +4,16 @@ import { ArrowBackIcon } from './Icons'
 import React, { useCallback } from 'react';
 
 const GoBackBtn = ({ title, path }: { title: string; path: string }) => {
-  console.log("iam redinger.........")
   const router = useRouter()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleNavigation = () => {
     router.push(path)
   }
 
   const callBack = useCallback(()=> {
-    
     handleNavigation();
-  }, [])
+  }, [handleNavigation])
 
 
   return (

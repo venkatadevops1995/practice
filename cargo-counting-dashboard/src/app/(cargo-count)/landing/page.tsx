@@ -3,7 +3,7 @@
 import useCheckCargoLiveFromServer from "../cargo-utils/cargo-live-server"
 
 
-const LandingPage = () => {
+const LandingPage = async () => {
 
   return useCheckCargoLiveFromServer()
 }

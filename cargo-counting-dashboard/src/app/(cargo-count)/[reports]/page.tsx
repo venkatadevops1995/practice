@@ -1,27 +1,19 @@
 'use server'
 
 import GoBackBtn from '~/app/components/BackBtn'
-import TransactionList from './TransactionsList'
 import SearchQuery from '~/app/components/SearchQuery'
 import { PrismaClient } from '@prisma/client';
 import { type POResponseType } from '~/pages/api/api-typings';
-import TableView from './TableViw';
+import TransactionList from '../shared/TransactionsList';
+import TableView from '../shared/TableViw';
 
 const prisma = new PrismaClient();
 
-
 const ReportPage = async () => { 
   //  await useCheckCargoLiveFromServer()
-
-
-  
-
       const getPoCounts = await prisma.cargoCount.findMany({
 }) as unknown as POResponseType[];
     
-
-   
-
 
   return (
     <>
@@ -44,7 +36,7 @@ const ReportPage = async () => {
           </div>
           
           <div className='mobile:hidden desktop:block tablet:block h-[calc(100dvh-90px)]'>
-              <TableView responseData={getPoCounts}/>
+              <TableView responseData={getPoCounts} isActivePage={false}/>
           </div>
 
           </div>

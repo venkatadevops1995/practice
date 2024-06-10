@@ -2,16 +2,12 @@
 import { type PORequestType } from '~/pages/api/api-typings';
 import axios, { type AxiosResponse } from 'axios';
 
-const startStopCountRequestHandler = async (id:string,action:string): Promise<AxiosResponse<any, any>> => {
+const startStopCountRequestHandler = async (id:string,action:string,run_env:any): Promise<AxiosResponse<any, any>> => {
 
   const payload =  { 
     entrypoint: `python3 main.py '{\"job_id\": \"${id}\", \"op_type\": \"${action}\", \"cam_streaming_url\": \"/home/cargo_data/input_data/2024-05-25_07-40-00.mp4\", \"survey_operation_type\": \"4\"}'`,
-    runtime_env: {
-      working_dir: "gcs://_ray_pkg_a42fc1c18a1f1be5.zip",
-      excludes: [
-        "model_data/"
-      ]
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    runtime_env: run_env
   }
 
   return axios.post('/api/post-start-stop-job', payload)

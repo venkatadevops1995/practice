@@ -1,12 +1,12 @@
 "use client";
 
 import { type POResponseType } from "~/pages/api/api-typings";
-import TransctionCard from "./Cards";
 import { useEffect, useState } from "react";
 import NoRecordsFound from "~/app/components/NoRecods";
 import useQueryParamsFilterHook from "~/app/hooks/useQueryParamsFilterHooks";
 import React from "react";
 import useDeviceType from "~/app/hooks/useDeviceTypeHook";
+import TransctionCard from './Cards'
 
 const TransactionList = ({ responseData }: { responseData: POResponseType[] }) => {
     

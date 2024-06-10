@@ -4,7 +4,6 @@ import { useCallback } from "react";
 const useCheckCargoLiveFromClient =   ()=> {
   
 
-   console.log("Me runnin...")
    
 
       const router = useRouter();

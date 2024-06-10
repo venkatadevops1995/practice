@@ -1,3 +1,4 @@
+"use server";
 import LandingPage from "./landing/page";
 
 const CargoCountPage =  ()=> {

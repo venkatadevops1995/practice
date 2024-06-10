@@ -12,11 +12,12 @@ import { type POResponseType, WebsocketEventEnum } from "~/pages/api/api-typings
 
 export type GlobalState = {
   liveCountData: POResponseType | null;
+  runtime_env: string | null;
 };
 
 export type ApplicationType = {
   state: GlobalState;
-  dispatch: Dispatch<unknown>;
+  dispatch: Dispatch<{type:string,payload:GlobalState}>;
 };
 
 const applicationContext = createContext<ApplicationType | undefined>(
@@ -42,6 +43,13 @@ const reducer = (state: any, action: any) => {
           ...state,
           liveCountData: action.payload
        }
+     case WebsocketEventEnum.RUN_TIME_ENV:
+        
+       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+       return  {
+          ...state,
+          runtime_env: action.payload
+       }
 
     default:
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -55,19 +63,14 @@ const reducer = (state: any, action: any) => {
 
 const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
   const data: GlobalState = {
-    liveCountData: null
+    liveCountData: null,
+    runtime_env: null
   };
-
- 
-
   const [state, dispatch] = useReducer(reducer, data);
-
-
+ 
    useWebSocketConnectionHook((data) => {
       dispatch({type: WebsocketEventEnum.LIVE_COUNT, payload: data});
-   }, WebsocketEventEnum.LIVE_COUNT);
-
-  
+   }, WebsocketEventEnum.LIVE_COUNT);  
   return (
     <applicationContext.Provider value={{ state, dispatch }}>
       {children}

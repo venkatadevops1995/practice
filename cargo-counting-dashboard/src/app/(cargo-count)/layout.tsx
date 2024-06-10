@@ -1,3 +1,4 @@
+import { ApplicationProvider } from "../context"
 
 export default async function CargoCountLayout({
   children,
@@ -6,7 +7,10 @@ export default async function CargoCountLayout({
 }) {
   return (
     <div className="w-screen  h-[100dvh] overflow-hidden grid px-[20px] pb-[2px] pt-[4px]  bg-[#F1F1F1]">
-      {children}
+      <ApplicationProvider>
+        {children}
+      </ApplicationProvider>
+     
     </div>
   )
 }

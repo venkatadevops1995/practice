@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
@@ -10,17 +11,20 @@ import GenericCard from '~/app/components/GenericCard'
 import useDeviceType from '~/app/hooks/useDeviceTypeHook'
 import { useRouter } from 'next/navigation'
 import { useApplicationContext } from '~/app/context'
-import {  motion } from 'framer-motion'
-
+import { motion } from 'framer-motion'
+import axios from 'axios'
+import React from 'react'
+import { WebsocketEventEnum } from '~/pages/api/api-typings'
+import ActiveJobsList from '../shared/ActiveJobs'
+import ClientComponentWrapper from '../shared/ClientComponentWrapper'
 
 const CreatePOPage = () => {
-
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
     boolean
   >(false)
   const { state, dispatch } = useApplicationContext()
 
-  const [animateValue,setAnimateValue]  = useState<number>(200);
+  const [animateValue, setAnimateValue] = useState<number>(200)
 
   const getDeviceType = useDeviceType()
   const [shouldIconVisible, setIconVisibility] = useState<boolean>(false)
@@ -53,10 +57,14 @@ const CreatePOPage = () => {
   }, [getDeviceType])
 
   useEffect(() => {
-    if (state?.liveCountData?.isActive) {
-      router.push('/live')
+    const defaultJob = async ()=> {
+      const response = await  axios.get('/api/fetch-default-job');
+      const result = (await response?.data)
+      dispatch({type: WebsocketEventEnum.RUN_TIME_ENV, payload: result?.runtime_env})
+       return
     }
-  }, [router, state?.liveCountData])
+    defaultJob()
+  }, [])
 
   return (
     <div className="grid h-full w-full overflow-x-hidden overflow-y-auto grid-rows-[max-content,minmax(0,1fr)] pr-2">
@@ -66,7 +74,12 @@ const CreatePOPage = () => {
       </div>
 
       <div className="grid h-full w-full tablet:grid-cols-2 desktop:grid-cols-2 relative  mobile:grid-rows-[minmax(0,0.9fr),max-content]">
-        <div className="grid w-full justify-center items-center pl-2">
+        <div className="grid w-full pl-2">
+          
+          {/* <ClientComponentWrapper>
+             <ActiveJobsList />
+          </ClientComponentWrapper> */}
+    
           <Image
             src={'/images/landing_img.svg'}
             alt="Landing Image"
@@ -76,22 +89,21 @@ const CreatePOPage = () => {
         <Box
           overflowX={'hidden'}
           as={motion.div}
-          animate={{ x: animateValue  }}
+          animate={{ x: animateValue }}
           transition="0.1s linear"
           initial={true}
-        
         >
-        {isCardOpenForDesktopTablet && (
-          <div className="desktop:flex tablet:flex w-full justify-center mobile:hidden">
-            <div className="desktop:w-[400px] tablet:w-[400px] desktop:h-max">
+          {isCardOpenForDesktopTablet && (
+            <div className="desktop:flex tablet:flex w-full justify-center mobile:hidden">
+              <div className="desktop:w-[400px] tablet:w-[400px] desktop:h-max">
                 <GenericCard title="New Cargo">
                   <CargoInputComponent
                     close={onHandleSlide}
                   ></CargoInputComponent>
                 </GenericCard>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </Box>
         {shouldIconVisible && (
           <div className="flex w-full justify-end absolute bottom-[35px] right-[31px]">

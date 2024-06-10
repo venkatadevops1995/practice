@@ -15,7 +15,6 @@ const useWebSocketConnectionHook = (cb:(arg:unknown)=>void,event:WebsocketEventE
 
     socket.on("connect", () => {
       socket.on(event as unknown as string, (data) => {
-        console.log(data,"data")
         cb(data);
       });
       console.log("Connected");
@@ -40,7 +39,7 @@ const useWebSocketConnectionHook = (cb:(arg:unknown)=>void,event:WebsocketEventE
       socketRef?.current?.disconnect();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  },[event]);
 
 
 }

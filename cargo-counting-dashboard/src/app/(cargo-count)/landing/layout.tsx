@@ -1,3 +1,4 @@
+import { ApplicationProvider } from "~/app/context"
 
 export default async function LandingLayout({
   children,
@@ -6,7 +7,8 @@ export default async function LandingLayout({
 }) {
   return (
     <div className="w-screen  h-[100dvh] overflow-hidden grid bg-[#F1F1F1]">
-      {children}
+         {children}
+ 
     </div>
   )
 }

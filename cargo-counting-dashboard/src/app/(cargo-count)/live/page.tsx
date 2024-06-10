@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -10,11 +11,13 @@ import { useRouter } from "next/navigation";
 import { useApplicationContext } from "~/app/context";
 import { stopJobHandler } from "../_RequestHandlers/live-request-handler";
 import { startStopCountRequestHandler } from "../_RequestHandlers/create-po-request-handler";
+import axios from "axios";
 
 const CargoLivePage =  () => {  
   const  {state,dispatch} = useApplicationContext()
   const [getCargoEvent,setCargoEvent] = useState<POResponseType>();
   const alertRef = useRef<any>(null);
+  const [isJobCanceled,setJobCanceled] = useState<boolean>(false);
   const route = useRouter();
   const onAskUserConfirmation = ()=> {
        alertRef?.current?.onOpen()
@@ -29,13 +32,9 @@ const CargoLivePage =  () => {
  *? After confirmation user can stop job but need to wait from ray piple response untill count will be displayed
  *! TODO: Need to check should i wait to ray response or just direct move to again create new job
  */
-const onHandleConfirm = async ()=> {
-
-  
-   
-  
+const onHandleConfirm = async ()=> {  
   //! A method has implememted to communicate with the ray pipline to stop job/start
-  startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '' , 'stop')?.then(async (startResponse)=> {
+  startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '' , 'stop', state?.runtime_env)?.then(async (startResponse)=> {
     const  startPayload: PORequestType = {
       startAt: new Date().getTime()+'',
       endAt: new Date().getTime()+'',
@@ -44,14 +43,18 @@ const onHandleConfirm = async ()=> {
       count: 0
     }
    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-   if([200,201].includes(startResponse.status)) {
-        const response =    await stopJobHandler(startPayload)
-        if([200,201].includes(response.status)) {
-          //! Update the Context Store
-              dispatch({type: WebsocketEventEnum.LIVE_COUNT, payload: startPayload})
-            //! After Navigate to the Create new Job
-              route.push('/create-po')
-        }    
+   if([200,201]?.includes(startResponse?.status)) {
+       alertRef?.current?.onClose();
+       setJobCanceled(true);
+       const response =    await stopJobHandler(startPayload)
+       if([200,201].includes(response.status)) {
+         //! Update the Context Store
+         //! After Navigate to the Create new Job
+         //* wait for some mocked time like , ray will finished 
+         setJobCanceled(false); 
+         dispatch({type: WebsocketEventEnum.LIVE_COUNT, payload: startPayload as any})
+         route.push('/create-po')
+        } 
    }
   })?.catch(err=> {
      console.log("error",err)
@@ -59,8 +62,21 @@ const onHandleConfirm = async ()=> {
    }
 
   useEffect(()=> {
+     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
      setCargoEvent(state?.liveCountData ?? undefined)
-  }, [state.liveCountData])
+  }, [state, state?.liveCountData])
+
+  useEffect(() => {
+    const defaultJob = async ()=> {
+      const response = await  axios.get('/api/fetch-default-job');
+      const result = (await response?.data)
+      dispatch({type: WebsocketEventEnum.RUN_TIME_ENV, payload: result?.runtime_env})
+       return
+    }
+    defaultJob()
+   
+  }, [])
+
 
 
   return (
@@ -86,7 +102,7 @@ const onHandleConfirm = async ()=> {
             bg={'var(--app-btn-cancel)'}
             _hover={{background: 'var(--app-btn-cancel)'}}
 
-            className={`${true ? '' : 'no-ptr'}`}
+            className={`${!isJobCanceled ? '' : 'no-ptr'}`}
           >
             Stop
           </Button>

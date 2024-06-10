@@ -8,11 +8,14 @@ import React from 'react'
 import { type PORequestType } from '~/pages/api/api-typings'
 import { saveAfterJobStarted, startStopCountRequestHandler } from '../_RequestHandlers/create-po-request-handler'
 import { useRouter } from 'next/navigation'
+import { useApplicationContext } from '~/app/context'
 
 
 const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  , title?:string}) => {
 
   const [isFormValid, setFormValid] = useState<boolean>(false)
+  const { state } = useApplicationContext()
+
   const [getPo,setPo]  = useState<string>();
   const router = useRouter()
 
@@ -29,7 +32,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void  
   */
   const handlePOSubmission  = async ()=> {
   //! A method has implememted to communicate with the ray pipline to stop job/start
-  startStopCountRequestHandler(getPo ?? '', 'start')?.then(async (startResponse)=> {
+  startStopCountRequestHandler(getPo ?? '', 'start', state.runtime_env)?.then(async (startResponse)=> {
     const  startPayload: PORequestType = {
       startAt: new Date().getTime()+'',
       endAt: '',

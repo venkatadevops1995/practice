@@ -1,52 +1,52 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaClient } from '@prisma/client';
-import type { NextApiRequest } from 'next'
-import { type NextApiResponseWithSocket, type PORequestType } from './api-typings';
- 
+import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiResponseWithSocket, PORequestType } from './api-typings';
 
 const prisma = new PrismaClient();
-
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseWithSocket
 ) {
- 
-  const reqData:PORequestType =  req.body as PORequestType
+  const reqData: PORequestType = req.body as PORequestType;
 
+  console.log(reqData, "live");
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  
-   const isRecordExists  = await prisma?.cargoCount?.findFirst({
+  try {
+    const isRecordExists = await prisma.cargoCount.findUnique({
       where: {
-        poNumber : reqData?.po_number
-      }
-    })
+        poNumber: reqData.po_number,
+      },
+    });
 
-   
-  const record = await prisma?.cargoCount?.upsert({
-    create: {
-    startAt: reqData?.startAt,
-        endAt: reqData?.endAt,
-        poNumber: reqData?.po_number,
+    const record = await prisma.cargoCount.upsert({
+      create: {
+        startAt: reqData.startAt,
+        endAt: reqData.endAt,
+        poNumber: reqData.po_number,
         isActive: true,
-        count: +reqData?.count
-     },
-  update: {
-     startAt: reqData?.startAt,
-        endAt: reqData?.endAt,
-        poNumber:reqData?.po_number,
-        count: +reqData?.count,
-        isActive: reqData?.endAt !== null || reqData.endAt!=='',
-  },
-  where: {
-    id: isRecordExists?.id,
-    poNumber: reqData?.po_number
-  }
-  
-})
-
+        count: +reqData.count,
+      },
+      update: {
+        startAt: reqData.startAt,
+        endAt: reqData.endAt,
+        poNumber: reqData.po_number,
+        count: +reqData.count,
+        isActive: reqData.endAt !== null && reqData.endAt !== '',
+      },
+      where: {
+        poNumber: reqData.po_number,
+      },
+    });
 
      res.socket.server.io?.emit('live-count',record);  
-     return res.status(200).json({ message: record })
+    res.status(200).json(record);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while processing the request." });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
