@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
@@ -15,11 +15,14 @@ import axios from 'axios'
 import React from 'react'
 import { AppEventEnum } from '~/pages/api/api-typings'
 import { useQuery } from '@tanstack/react-query'
+import useHttpLoader from '~/app/hooks/useHttpLoader'
 
 const CreatePOPage = () => {
-
-  const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<boolean>(false)
+  const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
+    boolean
+  >(false)
   const { dispatch } = useApplicationContext()
+  const { setLoader } = useHttpLoader()
 
   const [animateValue, setAnimateValue] = useState<number>(200)
 
@@ -45,30 +48,21 @@ const CreatePOPage = () => {
 
   useEffect(() => {
     if (isPending) {
-      dispatch({
-        type: AppEventEnum.LOADER,
-        payload: { state: true },
-      })
+      setLoader(true)
     }
     if (isError || error) {
-      dispatch({
-        type: AppEventEnum.LOADER,
-        payload: { state: false },
-      })
+      setLoader(false)
     }
   }, [isPending, isError, error, dispatch])
 
   useEffect(() => {
     if (data) {
-      dispatch({
-        type: AppEventEnum.LOADER,
-        payload: { state: false }
-      })
+      setLoader(false)
     }
   }, [data, dispatch])
 
   useEffect(() => {
-    if (getDeviceType !== 'undefined') {
+    if (getDeviceType) {
       setIconVisibility(true)
       setCardOpenForDesktopTablet(false)
     }

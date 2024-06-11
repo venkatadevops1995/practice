@@ -10,26 +10,14 @@ const startStopCountRequestHandler = async (id:string,action:string,run_env:any)
     runtime_env: run_env
   }
 
-  return axios.post('/api/post-start-stop-job', payload)
-  ?.then(function (response) {
-     return response
-  })
-  ?.catch(function (error) {
-   // eslint-disable-next-line @typescript-eslint/unbound-method
-   return  Promise.reject(error)
-  });
+  const response =  await axios.post('/api/post-start-stop-job', payload)
+
+  return response;
 };
 
 const saveAfterJobStarted = async (payload: PORequestType): Promise<AxiosResponse<any, any>> => {
 
-  return axios.post('/api/live-po-count/', payload)
-    .then(function (response) {
-      return response;
-    })
-    .catch(function (error) {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      return Promise.reject(error);
-    });
+  return await axios.post('/api/live-po-count/', payload)
 };
 
 export { startStopCountRequestHandler, saveAfterJobStarted };
