@@ -2,10 +2,6 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 const useCheckCargoLiveFromClient =   ()=> {
-  
-
-   
-
       const router = useRouter();
 
       

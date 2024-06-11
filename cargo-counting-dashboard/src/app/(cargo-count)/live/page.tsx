@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Image } from "@chakra-ui/react";
 import CountCard from "./CountCard";
-import { WebsocketEventEnum, type PORequestType, type POResponseType } from "~/pages/api/api-typings";
+import { AppEventEnum, type PORequestType, type POResponseType } from "~/pages/api/api-typings";
 import React from "react";
 import AlertDialogBox from "../../components/Alerts";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import { useApplicationContext } from "~/app/context";
 import { stopJobHandler } from "../_RequestHandlers/live-request-handler";
 import { startStopCountRequestHandler } from "../_RequestHandlers/create-po-request-handler";
 import axios from "axios";
+import useWebSocketConnectionHook from "~/app/hooks/useWebsocketHook";
 
 const CargoLivePage =  () => {  
   const  {state,dispatch} = useApplicationContext()
@@ -23,6 +24,8 @@ const CargoLivePage =  () => {
        alertRef?.current?.onOpen()
   }
  
+  useWebSocketConnectionHook((data) => dispatch({ type: AppEventEnum.LIVE_COUNT, payload: data }), AppEventEnum.LIVE_COUNT);  
+
  
   const onHandleClose = async ()=> {
      
@@ -52,7 +55,7 @@ const onHandleConfirm = async ()=> {
          //! After Navigate to the Create new Job
          //* wait for some mocked time like , ray will finished 
          setJobCanceled(false); 
-         dispatch({type: WebsocketEventEnum.LIVE_COUNT, payload: startPayload as any})
+         dispatch({type: AppEventEnum.LIVE_COUNT, payload: startPayload as any})
          route.push('/create-po')
         } 
    }
@@ -70,14 +73,12 @@ const onHandleConfirm = async ()=> {
     const defaultJob = async ()=> {
       const response = await  axios.get('/api/fetch-default-job');
       const result = (await response?.data)
-      dispatch({type: WebsocketEventEnum.RUN_TIME_ENV, payload: result?.runtime_env})
+      dispatch({type: AppEventEnum.RUN_TIME_ENV, payload: result?.runtime_env})
        return
     }
     defaultJob()
    
   }, [])
-
-
 
   return (
     <div className="grid w-full  overflow-auto grid-rows-[max-content,minmax(0,1fr)]">

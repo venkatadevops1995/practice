@@ -28,7 +28,9 @@ export interface SocketWithIO extends NetSocket {
 }
 
 
-export enum WebsocketEventEnum {
+export enum AppEventEnum {
   LIVE_COUNT='live-count',
-  RUN_TIME_ENV = "run_time_env"
+  RUN_TIME_ENV = "run_time_env",
+  ERROR = 'error',
+  LOADER = 'loader'
 }

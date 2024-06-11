@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 
 const useDeviceType = () => {
@@ -44,4 +45,4 @@ const getDeviceType = () =>
   }  
 };
 
-export default useDeviceType;
+export default useDeviceType

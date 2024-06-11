@@ -9,20 +9,17 @@ import SlideTransition from '../../components/SlideTransition'
 import CargoInputComponent from './CargoInputComponent'
 import GenericCard from '~/app/components/GenericCard'
 import useDeviceType from '~/app/hooks/useDeviceTypeHook'
-import { useRouter } from 'next/navigation'
 import { useApplicationContext } from '~/app/context'
 import { motion } from 'framer-motion'
 import axios from 'axios'
 import React from 'react'
-import { WebsocketEventEnum } from '~/pages/api/api-typings'
-import ActiveJobsList from '../shared/ActiveJobs'
-import ClientComponentWrapper from '../shared/ClientComponentWrapper'
+import { AppEventEnum } from '~/pages/api/api-typings'
+import { useQuery } from '@tanstack/react-query'
 
 const CreatePOPage = () => {
-  const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
-    boolean
-  >(false)
-  const { state, dispatch } = useApplicationContext()
+
+  const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<boolean>(false)
+  const { dispatch } = useApplicationContext()
 
   const [animateValue, setAnimateValue] = useState<number>(200)
 
@@ -30,7 +27,52 @@ const CreatePOPage = () => {
   const [shouldIconVisible, setIconVisibility] = useState<boolean>(false)
 
   const toggleSlideRef = useRef<any>(null)
-  const router = useRouter()
+
+  const defaultJob = async () => {
+    const response = await axios.get('/api/fetch-default-job')
+    const result = response.data
+    dispatch({
+      type: AppEventEnum.RUN_TIME_ENV,
+      payload: result?.runtime_env,
+    })
+    return response
+  }
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['getDefaultJob'],
+    queryFn: defaultJob,
+  })
+
+  useEffect(() => {
+    if (isPending) {
+      dispatch({
+        type: AppEventEnum.LOADER,
+        payload: { state: true },
+      })
+    }
+    if (isError || error) {
+      dispatch({
+        type: AppEventEnum.LOADER,
+        payload: { state: false },
+      })
+    }
+  }, [isPending, isError, error, dispatch])
+
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: AppEventEnum.LOADER,
+        payload: { state: false }
+      })
+    }
+  }, [data, dispatch])
+
+  useEffect(() => {
+    if (getDeviceType !== 'undefined') {
+      setIconVisibility(true)
+      setCardOpenForDesktopTablet(false)
+    }
+  }, [getDeviceType])
 
   const onHandleSlide = (action: unknown) => {
     if (getDeviceType !== 'mobile') {
@@ -49,23 +91,6 @@ const CreatePOPage = () => {
     }
   }
 
-  useEffect(() => {
-    if (getDeviceType !== 'undefined') {
-      setIconVisibility(true)
-      setCardOpenForDesktopTablet(false)
-    }
-  }, [getDeviceType])
-
-  useEffect(() => {
-    const defaultJob = async ()=> {
-      const response = await  axios.get('/api/fetch-default-job');
-      const result = (await response?.data)
-      dispatch({type: WebsocketEventEnum.RUN_TIME_ENV, payload: result?.runtime_env})
-       return
-    }
-    defaultJob()
-  }, [])
-
   return (
     <div className="grid h-full w-full overflow-x-hidden overflow-y-auto grid-rows-[max-content,minmax(0,1fr)] pr-2">
       <div className="flex h-[50px] w-full items-center justify-start gap-x-[5px]">
@@ -73,13 +98,8 @@ const CreatePOPage = () => {
         <span className="h-max w-full text-[24px] font-isb font-[500]"></span>
       </div>
 
-      <div className="grid h-full w-full tablet:grid-cols-2 desktop:grid-cols-2 relative  mobile:grid-rows-[minmax(0,0.9fr),max-content]">
+      <div className="grid h-full w-full tablet:grid-cols-2 desktop:grid-cols-2 relative mobile:grid-rows-[minmax(0,0.9fr),max-content]">
         <div className="grid w-full pl-2">
-          
-          {/* <ClientComponentWrapper>
-             <ActiveJobsList />
-          </ClientComponentWrapper> */}
-    
           <Image
             src={'/images/landing_img.svg'}
             alt="Landing Image"
@@ -97,9 +117,7 @@ const CreatePOPage = () => {
             <div className="desktop:flex tablet:flex w-full justify-center mobile:hidden">
               <div className="desktop:w-[400px] tablet:w-[400px] desktop:h-max">
                 <GenericCard title="New Cargo">
-                  <CargoInputComponent
-                    close={onHandleSlide}
-                  ></CargoInputComponent>
+                  <CargoInputComponent close={onHandleSlide} />
                 </GenericCard>
               </div>
             </div>
@@ -108,7 +126,7 @@ const CreatePOPage = () => {
         {shouldIconVisible && (
           <div className="flex w-full justify-end absolute bottom-[35px] right-[31px]">
             <div
-              onClick={onHandleSlide}
+              onClick={() => onHandleSlide('forward')}
               className="relative h-[50px] w-[50px] bg-[var(--overlay-bg)] rounded-[12px]"
             >
               <Image
@@ -122,10 +140,7 @@ const CreatePOPage = () => {
       </div>
       <SlideTransition ref={toggleSlideRef} direction="bottom">
         {getDeviceType === 'mobile' && (
-          <CargoInputComponent
-            title="New Cargo"
-            close={onHandleSlide}
-          ></CargoInputComponent>
+          <CargoInputComponent title="New Cargo" close={onHandleSlide} />
         )}
       </SlideTransition>
     </div>

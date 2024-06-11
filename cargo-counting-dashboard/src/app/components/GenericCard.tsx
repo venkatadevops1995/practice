@@ -1,3 +1,5 @@
+import React from "react"
+
 const GenericCard = ({children,title}: {
     children: React.ReactNode,
     title:string
@@ -21,4 +23,4 @@ const GenericCard = ({children,title}: {
 }
 
 
-export default GenericCard
+export default React.memo(GenericCard)

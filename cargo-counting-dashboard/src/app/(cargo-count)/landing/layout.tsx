@@ -1,4 +1,3 @@
-import { ApplicationProvider } from "~/app/context"
 
 export default async function LandingLayout({
   children,

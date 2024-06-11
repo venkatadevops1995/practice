@@ -4,6 +4,9 @@
     --overlay-bg:#7ECC29;
     --overlay-bg-alpha: #E2F4CE;
 
+    /* Http Back overlay */
+    --http-loader-bg: rgba(0,0,0,0.5);
+
     /* Text */
     --app-text-clr: #191919;
 
