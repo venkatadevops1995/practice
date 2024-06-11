@@ -2,7 +2,7 @@ import {  } from 'react'
 import { useApplicationContext } from '../context'
 import { AppEventEnum } from '~/pages/api/api-typings'
 
-const useHttpLoader =()=> {
+const useHttpClientHandler =()=> {
   const { dispatch } = useApplicationContext()
 
   const setLoader = 
@@ -11,7 +11,14 @@ const useHttpLoader =()=> {
     }
     
 
-  return { setLoader }
+   const setError = 
+    (error?: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      dispatch({ type: AppEventEnum.ERROR, payload: error })
+    }
+    
+
+  return { setLoader, setError }
 }
 
-export default  useHttpLoader
+export default  useHttpClientHandler

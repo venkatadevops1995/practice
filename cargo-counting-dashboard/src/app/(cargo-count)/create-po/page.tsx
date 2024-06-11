@@ -15,14 +15,14 @@ import axios from 'axios'
 import React from 'react'
 import { AppEventEnum } from '~/pages/api/api-typings'
 import { useQuery } from '@tanstack/react-query'
-import useHttpLoader from '~/app/hooks/useHttpLoader'
+import useHttpClientHandler from '~/app/hooks/useHttpLoader'
 
 const CreatePOPage = () => {
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
     boolean
   >(false)
   const { dispatch } = useApplicationContext()
-  const { setLoader } = useHttpLoader()
+  const { setLoader , setError } = useHttpClientHandler()
 
   const [animateValue, setAnimateValue] = useState<number>(200)
 
@@ -52,6 +52,7 @@ const CreatePOPage = () => {
     }
     if (isError || error) {
       setLoader(false)
+      setError(error)
     }
   }, [isPending, isError, error, dispatch])
 

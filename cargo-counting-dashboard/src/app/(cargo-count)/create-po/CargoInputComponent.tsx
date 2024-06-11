@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-floating-promises */
+
 'use client'
 
 import { Input, Image, Button } from '@chakra-ui/react'
@@ -10,7 +9,7 @@ import { saveAfterJobStarted, startStopCountRequestHandler } from '../_RequestHa
 import { useRouter } from 'next/navigation'
 import { useApplicationContext } from '~/app/context'
 import { useMutation } from '@tanstack/react-query'
-import useHttpLoader from '~/app/hooks/useHttpLoader'
+import useHttpClientHandler from '~/app/hooks/useHttpLoader'
 
 const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, title?: string }) => {
 
@@ -18,7 +17,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
   const { state } = useApplicationContext()
   const [getPo, setPo] = useState<string>()
   const router = useRouter()
-  const {setLoader} = useHttpLoader()
+  const {setLoader} = useHttpClientHandler()
 
   const onPoNumberInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const po_number = e.target.value
@@ -34,6 +33,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
           startAt: new Date().getTime() + '',
           endAt: '',
           isActive: false,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           po_number: getPo as any,
           count: 0
         }

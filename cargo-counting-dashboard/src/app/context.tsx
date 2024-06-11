@@ -10,6 +10,7 @@ import React, {
 import { type POResponseType, AppEventEnum } from "~/pages/api/api-typings";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HttpLoader from "./components/Loader";
+import ErrorDialog from "./components/ErrorDialog";
 
 
 
@@ -129,15 +130,13 @@ const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
              <div className="bg-[var(--http-loader-bg)] fixed w-screen h-screen z-[9999999999]">
              
              </div>
-            
           }
            {
             state?.loader?.state &&
             <HttpLoader/>
            }
            {children}
-
-          
+        <ErrorDialog/>
       </QueryClientProvider>
     </applicationContext.Provider>
   );
