@@ -11,6 +11,7 @@ import { type POResponseType, AppEventEnum } from "~/pages/api/api-typings";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HttpLoader from "./components/Loader";
 import ErrorDialog from "./components/ErrorDialog";
+import useWebSocketConnectionHook from "./hooks/useWebsocketHook";
 
 
 
@@ -121,7 +122,8 @@ const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const [state, dispatch] = useReducer(reducer, data);
  
-   
+  useWebSocketConnectionHook((data) => dispatch({ type: AppEventEnum.LIVE_COUNT, payload: data }), AppEventEnum.LIVE_COUNT);  
+
   return (
     <applicationContext.Provider value={{ state, dispatch }}>
           <QueryClientProvider client={queryClient}>

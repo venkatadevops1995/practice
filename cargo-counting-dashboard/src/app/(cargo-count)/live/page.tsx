@@ -9,13 +9,15 @@ import React from "react";
 import AlertDialogBox from "../../components/Alerts";
 import { useRouter } from "next/navigation";
 import { useApplicationContext } from "~/app/context";
-import { stopJobHandler } from "../_RequestHandlers/live-request-handler";
+import { defaultJob, stopJobHandler } from "../_RequestHandlers/live-request-handler";
 import { startStopCountRequestHandler } from "../_RequestHandlers/create-po-request-handler";
 import axios from "axios";
-import useWebSocketConnectionHook from "~/app/hooks/useWebsocketHook";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import useHttpClientHandler from "~/app/hooks/useHttpLoader";
 
 const CargoLivePage =  () => {  
   const  {state,dispatch} = useApplicationContext()
+    const {setLoader, setError} = useHttpClientHandler()
   const [getCargoEvent,setCargoEvent] = useState<POResponseType>();
   const alertRef = useRef<any>(null);
   const [isJobCanceled,setJobCanceled] = useState<boolean>(false);
@@ -24,61 +26,92 @@ const CargoLivePage =  () => {
        alertRef?.current?.onOpen()
   }
  
-  useWebSocketConnectionHook((data) => dispatch({ type: AppEventEnum.LIVE_COUNT, payload: data }), AppEventEnum.LIVE_COUNT);  
 
  
+  const requestJobMutation = useMutation({
+  mutationFn: () => startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '', 'stop', state?.runtime_env),
+  onSuccess: (startResponse) => {
+    setLoader(true);
+    if ([200, 201].includes(startResponse.status)) {
+      const startPayload: PORequestType = {
+        startAt: '',
+        endAt: new Date().getTime() + '',
+        isActive: false,
+        po_number: getCargoEvent?.po_number ?? getCargoEvent?.poNumber + '',
+        count: 0
+      }
+      setJobCanceled(true);
+      alertRef?.current?.onClose();
+      dispatch({type: AppEventEnum.LIVE_COUNT, payload: startPayload})
+      stopJobMutation.mutate(startPayload)
+    }
+  },
+  onError: (err) => {
+    setLoader(false);
+    alertRef?.current?.onClose();
+    setError(err)
+    console.log("error", err)
+  }
+})
+
+const stopJobMutation = useMutation({
+  mutationFn: (startPayload: PORequestType) => stopJobHandler(startPayload),
+  onSuccess: (saveResponse) => {
+    if ([200, 201].includes(saveResponse.status)) {
+      setLoader(false);
+      route.push('/create-po')
+    }
+  },
+  onError: (err) => {
+    setLoader(false);
+    setError(err)
+    alertRef?.current?.onClose();
+    console.log("error", err)
+  }
+})
   const onHandleClose = async ()=> {
      
        alertRef?.current?.onClose();
   }
-/**
- *? After confirmation user can stop job but need to wait from ray piple response untill count will be displayed
- *! TODO: Need to check should i wait to ray response or just direct move to again create new job
- */
-const onHandleConfirm = async ()=> {  
-  //! A method has implememted to communicate with the ray pipline to stop job/start
-  startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '' , 'stop', state?.runtime_env)?.then(async (startResponse)=> {
-    const  startPayload: PORequestType = {
-      startAt: new Date().getTime()+'',
-      endAt: new Date().getTime()+'',
-      isActive: false,
-      po_number:  getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '',
-      count: 0
-    }
-   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-   if([200,201]?.includes(startResponse?.status)) {
-       alertRef?.current?.onClose();
-       setJobCanceled(true);
-       const response =    await stopJobHandler(startPayload)
-       if([200,201].includes(response.status)) {
-         //! Update the Context Store
-         //! After Navigate to the Create new Job
-         //* wait for some mocked time like , ray will finished 
-         setJobCanceled(false); 
-         dispatch({type: AppEventEnum.LIVE_COUNT, payload: startPayload as any})
-         route.push('/create-po')
-        } 
-   }
-  })?.catch(err=> {
-     console.log("error",err)
+
+  const onHandleConfirm = async ()=> {  
+  requestJobMutation.mutate();
+
+  }
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['getDefaultJob'],
+    queryFn: defaultJob,
   })
-   }
+  useEffect(() => {
+    if (isPending) {
+      setLoader(true)
+    }
+    if (isError || error) {
+      setLoader(false)
+      setError(error)
+    }
+  }, [isPending, isError, error, dispatch])
+
+  useEffect(() => {
+    if (data) {
+       dispatch({
+      type: AppEventEnum.RUN_TIME_ENV,
+      payload: data.data?.runtime_env,
+    })
+      setLoader(false)
+    }
+  }, [data, dispatch])
+
+
+
+
 
   useEffect(()=> {
      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
      setCargoEvent(state?.liveCountData ?? undefined)
   }, [state, state?.liveCountData])
 
-  useEffect(() => {
-    const defaultJob = async ()=> {
-      const response = await  axios.get('/api/fetch-default-job');
-      const result = (await response?.data)
-      dispatch({type: AppEventEnum.RUN_TIME_ENV, payload: result?.runtime_env})
-       return
-    }
-    defaultJob()
-   
-  }, [])
+ 
 
   return (
     <div className="grid w-full  overflow-auto grid-rows-[max-content,minmax(0,1fr)]">
@@ -143,7 +176,4 @@ const onHandleConfirm = async ()=> {
     </div>
   );
 };
-
-export default React.memo(CargoLivePage);
-
-
+export default React.memo(CargoLivePage)

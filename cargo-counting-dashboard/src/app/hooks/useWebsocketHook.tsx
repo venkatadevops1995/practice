@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
-import { type WebsocketEventEnum } from "~/pages/api/api-typings";
+import { type AppEventEnum } from "~/pages/api/api-typings";
 
-const useWebSocketConnectionHook = (cb:(arg:unknown)=>void,event:WebsocketEventEnum)=> {
+const useWebSocketConnectionHook = (cb:(arg:unknown)=>void,event: AppEventEnum)=> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const socketRef = useRef<any>(null);

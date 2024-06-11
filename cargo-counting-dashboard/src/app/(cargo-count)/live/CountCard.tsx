@@ -23,7 +23,7 @@ const CountCard = ({liveData}:{liveData:POResponseType | undefined}) => {
             Purchage Order Number
           </span>
           <span className="text-[var(--app-text-clr)] font-isb  text-[clamp(18px,1vw,20px)] font-semibold">
-            {getLiveData?.poNumber ?? '--'}
+            {getLiveData?.poNumber ?? getLiveData?.po_number ?? '--'}
           </span>
         </div>
       </div>

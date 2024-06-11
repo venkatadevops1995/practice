@@ -13,14 +13,14 @@ import useHttpClientHandler from '~/app/hooks/useHttpLoader'
 
 const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, title?: string }) => {
 
-  const [isFormValid, setFormValid] = useState<boolean>(false)
+  const [isFormValid, setFormValid] = useState<boolean>(true)
   const { state } = useApplicationContext()
   const [getPo, setPo] = useState<string>()
   const router = useRouter()
-  const {setLoader} = useHttpClientHandler()
+  const {setLoader, setError} = useHttpClientHandler()
 
   const onPoNumberInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const po_number = e.target.value
+    const po_number = e?.target?.value
     setPo(po_number)
     setFormValid(!po_number)
   }
@@ -34,7 +34,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
           endAt: '',
           isActive: false,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          po_number: getPo as any,
+          po_number: getPo + '',
           count: 0
         }
         setLoader(true);
@@ -43,6 +43,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
     },
     onError: (err) => {
       setLoader(false);
+      setError(err)
       console.log("error", err)
     }
   })
@@ -57,6 +58,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
     },
     onError: (err) => {
       setLoader(false);
+      setError(err)
       console.log("error", err)
     }
   })

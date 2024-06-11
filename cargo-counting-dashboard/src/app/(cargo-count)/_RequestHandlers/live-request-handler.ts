@@ -3,15 +3,18 @@ import { type PORequestType } from "~/pages/api/api-typings";
 
  const stopJobHandler = async (payload: PORequestType)=> { 
 
-  return axios.post('/api/stop-job/', payload)
-  .then(function (response) {
-     return response;
-  })
-  .catch(function (error) {
-   return  Promise.reject(error)
-  });
+  return await axios.post('/api/stop-job/', payload)
+ 
   }
 
 
+const defaultJob = async () => {
+    const response = await axios.get('/api/fetch-default-job')
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    return response
+  }
 
-export {stopJobHandler}
+
+export {stopJobHandler,defaultJob}
+
+

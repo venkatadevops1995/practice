@@ -11,11 +11,11 @@ import GenericCard from '~/app/components/GenericCard'
 import useDeviceType from '~/app/hooks/useDeviceTypeHook'
 import { useApplicationContext } from '~/app/context'
 import { motion } from 'framer-motion'
-import axios from 'axios'
 import React from 'react'
-import { AppEventEnum } from '~/pages/api/api-typings'
 import { useQuery } from '@tanstack/react-query'
 import useHttpClientHandler from '~/app/hooks/useHttpLoader'
+import { defaultJob } from '../_RequestHandlers/live-request-handler'
+import { AppEventEnum } from '~/pages/api/api-typings'
 
 const CreatePOPage = () => {
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
@@ -30,17 +30,7 @@ const CreatePOPage = () => {
   const [shouldIconVisible, setIconVisibility] = useState<boolean>(false)
 
   const toggleSlideRef = useRef<any>(null)
-
-  const defaultJob = async () => {
-    const response = await axios.get('/api/fetch-default-job')
-    const result = response.data
-    dispatch({
-      type: AppEventEnum.RUN_TIME_ENV,
-      payload: result?.runtime_env,
-    })
-    return response
-  }
-
+  
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['getDefaultJob'],
     queryFn: defaultJob,
@@ -58,6 +48,10 @@ const CreatePOPage = () => {
 
   useEffect(() => {
     if (data) {
+       dispatch({
+      type: AppEventEnum.RUN_TIME_ENV,
+      payload: data.data?.runtime_env,
+    })
       setLoader(false)
     }
   }, [data, dispatch])
