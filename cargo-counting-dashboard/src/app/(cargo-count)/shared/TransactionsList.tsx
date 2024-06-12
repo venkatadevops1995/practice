@@ -26,7 +26,7 @@ const TransactionList = ({ responseData, isActiveJobs }: { responseData: PORespo
             setPOCounts(responseData);
         }
 
-    }, [responseData])
+    }, [])
 
 
 
