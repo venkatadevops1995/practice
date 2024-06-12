@@ -35,7 +35,7 @@ const ReportPage = async () => {
              <TransactionList  responseData={getPoCounts}/>
           </div>
           
-          <div className='mobile:hidden desktop:block tablet:block h-[calc(100dvh-90px)]'>
+          <div className='mobile:hidden desktop:block tablet:block h-[calc(100dvh-100px)]'>
               <TableView responseData={getPoCounts} isActivePage={false}/>
           </div>
 

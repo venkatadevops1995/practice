@@ -1,5 +1,4 @@
  th {
-     background: white;
      /* See https://caniuse.com/css-sticky */
      position: sticky;
      /* Don't forget this, required for the stickiness */
@@ -16,11 +15,14 @@
 
      display: flex;
      align-items: center;
+     background: #E2F4CE;
+
 
  }
 
  thead {
      box-shadow: 0px 2px 12px 2px #CAC9C966;
+     background: #E2F4CE;
  }
 
  tr {

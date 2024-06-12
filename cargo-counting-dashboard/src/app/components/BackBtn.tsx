@@ -19,7 +19,7 @@ const GoBackBtn = ({ title, path }: { title: string; path: string }) => {
   return (
     <div  onClick={callBack} className="flex gap-x-[10px] items-center" >
       <ArrowBackIcon cursor={'pointer'} boxSize={'24px'} />
-      <span className="text-[24px] font-medium">{title}</span>
+      <span className="h-max w-full desktop:text-[24px] mobile:text-[16px] tablet:text-[16px] font-isb font-[500]">{title}</span>
     </div>
   )
 }

@@ -127,7 +127,7 @@ const CreatePOPage = () => {
       </div>
 
       <div className="grid h-full w-full overflow-hidden tablet:grid-cols-1 desktop:grid-cols-1 mobile:grid-rows-[minmax(0,0.9fr)]">
-        <div className="grid w-full pl-2">
+        <div className="grid w-full pl-2 mt-[20px]">
           {getActiveJobs && <ActiveJobsList  data={getActiveJobs}/>}
           {!getActiveJobs && (
             <div>

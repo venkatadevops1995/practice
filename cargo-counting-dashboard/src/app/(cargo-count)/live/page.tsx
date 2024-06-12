@@ -13,6 +13,7 @@ import { defaultJob, stopJobHandler } from "../_RequestHandlers/live-request-han
 import { startStopCountRequestHandler } from "../_RequestHandlers/create-po-request-handler";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useHttpClientHandler from "~/app/hooks/useHttpLoader";
+import GoBackBtn from '~/app/components/BackBtn'
 
 const CargoLivePage = () => {
   const { state, dispatch } = useApplicationContext()
@@ -31,7 +32,7 @@ const CargoLivePage = () => {
   const requestJobMutation = useMutation({
     mutationFn: () => startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '', 'stop', state?.runtime_env),
     onSuccess: (startResponse) => {
-      setLoader(true);
+    
       if ([200, 201].includes(startResponse.status)) {
         const startPayload: PORequestType = {
           startAt: '',
@@ -75,6 +76,8 @@ const CargoLivePage = () => {
   }
 
   const onHandleConfirm = async () => {
+    setLoader(true);
+    alertRef?.current?.onClose();
     requestJobMutation.mutate();
 
   }
@@ -142,10 +145,11 @@ const CargoLivePage = () => {
   return (
     <div className="grid w-full  overflow-auto grid-rows-[max-content,minmax(0,1fr)]">
       <div className="flex h-[50px] w-full gap-x-2 items-center justify-start">
-        <Image src="/images/live_icon.svg" alt="live" /> <span> Cargo Live</span>
+        <GoBackBtn title={''} path={"/create-po"} />
+        <Image src="/images/live_icon.svg" alt="live" /> <span className="h-max w-full desktop:text-[24px] mobile:text-[16px] tablet:text-[16px] font-isb font-[500]">Cargo Live</span>
       </div>
       <div className="grid h-full w-full gap-y-[20px]  grid-rows-[max-content,1fr,max-content]]">
-        <div className="h-max relative mobile:justify-center w-full flex text-[24px] font-[500]">
+        <div className="h-max relative mobile:justify-center w-full flex text-[24px] font-[500] mt-[20px]">
           <CountCard liveData={getCargoEvent} />
         </div>
         <div className="grid w-full h-full justify-center items-center">
