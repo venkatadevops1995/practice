@@ -14,7 +14,7 @@ export default async function handler(
   const job_id = "cluster_job";
 
   try {
-      const apiRes = await fetch('http://172.16.120.98:8265/api/jobs/',{
+    const apiRes = await fetch(`${process.env.SERVER_RAY_PIPELINE_URL}`,{
       method: 'GET',
       headers: {
           "Content-Type": "application/json",
