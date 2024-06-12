@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-'use client'
+'use client';
 
 import { useEffect, useRef, useState } from 'react'
 import { Box, Image } from '@chakra-ui/react'
@@ -15,28 +15,62 @@ import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import useHttpClientHandler from '~/app/hooks/useHttpLoader'
 import { defaultJob } from '../_RequestHandlers/live-request-handler'
-import { AppEventEnum } from '~/pages/api/api-typings'
+import { AppEventEnum, type POResponseType } from '~/pages/api/api-typings'
+import { getAllActiveJobs } from '../_RequestHandlers/create-po-request-handler'
+import ActiveJobsList from '../shared/ActiveJobs'
 
 const CreatePOPage = () => {
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
     boolean
   >(false)
   const { dispatch } = useApplicationContext()
-  const { setLoader , setError } = useHttpClientHandler()
+  const { setLoader, setError } = useHttpClientHandler()
 
   const [animateValue, setAnimateValue] = useState<number>(200)
 
   const getDeviceType = useDeviceType()
   const [shouldIconVisible, setIconVisibility] = useState<boolean>(false)
+  const [getActiveJobs,setActiveJobs] = useState<POResponseType[]>([])
 
   const toggleSlideRef = useRef<any>(null)
-  
+
+  // Fetch Default Job from Ray Pipeline
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['getDefaultJob'],
     queryFn: defaultJob,
   })
 
+
+
+  const {
+    isPending: isPendingActiveJob,
+    isError: isErrorActiveJob,
+    data: dataActiveJob,
+    error: errorActiveJob,
+  } = useQuery({
+    queryKey: ['fetchActiveJobs'],
+    queryFn: getAllActiveJobs
+  })
+
   useEffect(() => {
+    if (isPendingActiveJob) {
+      setLoader(true)
+    }
+    if (isErrorActiveJob || errorActiveJob) {
+      setLoader(false)
+      setError(error)
+    }
+  }, [isErrorActiveJob, errorActiveJob, isPendingActiveJob])
+
+  useEffect(() => {
+    if (dataActiveJob) {
+      setActiveJobs(dataActiveJob?.data as POResponseType[]);
+      setLoader(false)
+    }
+  }, [dataActiveJob])
+
+
+    useEffect(() => {
     if (isPending) {
       setLoader(true)
     }
@@ -48,20 +82,25 @@ const CreatePOPage = () => {
 
   useEffect(() => {
     if (data) {
-       dispatch({
-      type: AppEventEnum.RUN_TIME_ENV,
-      payload: data.data?.runtime_env,
-    })
+      dispatch({
+        type: AppEventEnum.RUN_TIME_ENV,
+        payload: data.data?.runtime_env,
+      })
       setLoader(false)
     }
-  }, [data, dispatch])
-
+  }, [data])
+  
+  
+  
   useEffect(() => {
     if (getDeviceType) {
       setIconVisibility(true)
       setCardOpenForDesktopTablet(false)
     }
   }, [getDeviceType])
+
+
+
 
   const onHandleSlide = (action: unknown) => {
     if (getDeviceType !== 'mobile') {
@@ -89,11 +128,20 @@ const CreatePOPage = () => {
 
       <div className="grid h-full w-full tablet:grid-cols-2 desktop:grid-cols-2 relative mobile:grid-rows-[minmax(0,0.9fr),max-content]">
         <div className="grid w-full pl-2">
-          <Image
-            src={'/images/landing_img.svg'}
-            alt="Landing Image"
-            style={{ aspectRatio: '16 / 9', width: '90%', height: '90%' }}
-          />
+          {getActiveJobs && <ActiveJobsList  data={getActiveJobs}/>}
+          {!getActiveJobs && (
+            <div>
+              <Image
+                src={'/images/create_job.svg'}
+                alt="Landing Image"
+                style={{ aspectRatio: '16 / 9', width: '90%', height: '90%' }}
+              />
+
+              <div className="font-inter font-[500] text-center">
+                No, Active Cargo counting at the moment
+              </div>
+            </div>
+          )}
         </div>
         <Box
           overflowX={'hidden'}
@@ -128,7 +176,7 @@ const CreatePOPage = () => {
         )}
       </div>
       <SlideTransition ref={toggleSlideRef} direction="bottom">
-        {getDeviceType === 'mobile' && (
+        { getDeviceType!=='undefined' && getDeviceType === 'mobile' && (
           <CargoInputComponent title="New Cargo" close={onHandleSlide} />
         )}
       </SlideTransition>

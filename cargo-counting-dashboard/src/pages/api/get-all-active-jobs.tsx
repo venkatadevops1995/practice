@@ -12,11 +12,16 @@ export default async function handler(
 ) {
  
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const countRecord = await prisma.cargoCount.findFirst({
+  const countRecord = await prisma.cargoCount.findMany({
     where: {
        isActive: true
     }
   })
+
+  if(!countRecord) {
+  res.status(404).json({message: "no data found"})
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  res.status(200).json({  ...countRecord })
+  res.status(200).json( [...countRecord])
 }

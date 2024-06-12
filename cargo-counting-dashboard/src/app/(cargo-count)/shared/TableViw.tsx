@@ -10,7 +10,7 @@ import {
   Tbody,
   Td,
 } from '@chakra-ui/react'
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import NoRecordsFound from '~/app/components/NoRecods';
 import useDeviceType from '~/app/hooks/useDeviceTypeHook';
@@ -30,6 +30,17 @@ const TableView =   ({ responseData , isActivePage = false }: { responseData: PO
       return getFormatedTime(milSec,format)
 
     }  
+
+
+      useEffect(()=> {
+        
+        if(responseData) {
+            setFilteredData(responseData);
+        }
+
+    },[responseData])
+
+
     return (
         <>
           {

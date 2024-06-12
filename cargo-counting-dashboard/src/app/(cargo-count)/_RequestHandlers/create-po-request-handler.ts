@@ -20,4 +20,11 @@ const saveAfterJobStarted = async (payload: PORequestType): Promise<AxiosRespons
   return await axios.post('/api/live-po-count/', payload)
 };
 
-export { startStopCountRequestHandler, saveAfterJobStarted };
+
+const getAllActiveJobs = async (): Promise<AxiosResponse<any, any>> => {
+
+  return await axios.get('/api/get-all-active-jobs/')
+};
+
+
+export { startStopCountRequestHandler, saveAfterJobStarted , getAllActiveJobs };

@@ -19,13 +19,14 @@ export type GlobalState = {
   liveCountData: POResponseType | null;
   runtime_env: string | null;
   error: any;
+  selectedActiveData: POResponseType | null;
   loader: { state: boolean; text?: string } | null;
 };
 
 export type ApplicationType = {
   state: GlobalState;
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  dispatch: Dispatch<any>;
+  dispatch: Dispatch<{type: AppEventEnum, payload: GlobalState | any}>;
 };
 
 type LiveCountEvent = {
@@ -76,6 +77,15 @@ const reducer = (state: GlobalState, action: any):GlobalState => {
           ...state,
           liveCountData: action.payload
        }
+
+    case AppEventEnum.SELCTED_LIVE_DATA:
+
+      return {
+        ...state,
+        selectedActiveData: action.payload
+      }
+
+    
      case AppEventEnum.RUN_TIME_ENV:
         
        return  {
@@ -118,7 +128,8 @@ const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
     liveCountData: null,
     runtime_env: null,
     error: null,
-    loader: null
+    loader: null,
+    selectedActiveData: null
   };
   const [state, dispatch] = useReducer(reducer, data);
  

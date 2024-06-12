@@ -11,12 +11,11 @@ export default async function handler(
 ) {
   const reqData: PORequestType = req.body as PORequestType;
 
-  console.log(reqData, "live");
 
   try {
     const isRecordExists = await prisma.cargoCount.findUnique({
       where: {
-        poNumber: reqData.po_number,
+        poNumber: reqData?.po_number,
       },
     });
 
@@ -33,10 +32,10 @@ export default async function handler(
         endAt: reqData.endAt,
         poNumber: reqData.po_number,
         count: +reqData.count,
-        isActive: reqData.endAt !== null && reqData.endAt !== '',
+        isActive: isRecordExists?.isActive ?? true,
       },
       where: {
-        poNumber: reqData.po_number,
+        poNumber: reqData?.po_number,
       },
     });
 

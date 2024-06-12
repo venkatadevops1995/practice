@@ -4,7 +4,7 @@
 import { Input, Image, Button } from '@chakra-ui/react'
 import { type ChangeEvent, useState } from 'react'
 import React from 'react'
-import { type PORequestType } from '~/pages/api/api-typings'
+import { AppEventEnum, type PORequestType } from '~/pages/api/api-typings'
 import { saveAfterJobStarted, startStopCountRequestHandler } from '../_RequestHandlers/create-po-request-handler'
 import { useRouter } from 'next/navigation'
 import { useApplicationContext } from '~/app/context'
@@ -14,7 +14,7 @@ import useHttpClientHandler from '~/app/hooks/useHttpLoader'
 const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, title?: string }) => {
 
   const [isFormValid, setFormValid] = useState<boolean>(true)
-  const { state } = useApplicationContext()
+  const { state, dispatch } = useApplicationContext()
   const [getPo, setPo] = useState<string>()
   const router = useRouter()
   const {setLoader, setError} = useHttpClientHandler()
@@ -53,7 +53,13 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
     onSuccess: (saveResponse) => {
       if ([200, 201].includes(saveResponse.status)) {
         setLoader(false);
-        router.push('/live')
+      
+        if (saveResponse.data) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          dispatch({ type: AppEventEnum.SELCTED_LIVE_DATA, payload: saveResponse.data })
+        }
+        router?.push(`/live/?active=${saveResponse.data?.poNumber ??saveResponse?.data?.po_number}`)
+
       }
     },
     onError: (err) => {
