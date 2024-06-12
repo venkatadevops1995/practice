@@ -10,6 +10,7 @@ import {
   Tbody,
   Td,
 } from '@chakra-ui/react'
+import { cloneDeep } from 'lodash';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import NoRecordsFound from '~/app/components/NoRecods';
@@ -21,8 +22,12 @@ import { type POResponseType } from '~/pages/api/api-typings';
 const TableView = ({ responseData, isActivePage = false }: { responseData: POResponseType[], isActivePage: boolean }) => {
   const diviceType = useDeviceType()
   const [getFilteredData, setFilteredData] = useState<POResponseType[]>([]);
-  useQueryParamsFilterHook(responseData, 'poNumber', 'search', (data) => {
-    setFilteredData(data as Array<POResponseType>);
+  const [isAppReady,setAppReady]  = useState(false);
+  useQueryParamsFilterHook(cloneDeep(responseData), 'poNumber', 'search', (data) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment
+    setFilteredData([...data]);
+    setAppReady(true);
+
   })
   const handleGetParsedTime = (milSec: string, format: string) => {
 
@@ -31,15 +36,15 @@ const TableView = ({ responseData, isActivePage = false }: { responseData: PORes
   }
 
 
-
   useEffect(() => {
 
-
-    if (responseData) {
+    if (responseData &&  !isAppReady) {
       setFilteredData(responseData);
+      setAppReady(true);
     }
 
-  }, [])
+  }, [responseData])
+
 
 
   return (

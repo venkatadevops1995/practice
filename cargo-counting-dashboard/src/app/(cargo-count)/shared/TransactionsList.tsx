@@ -7,26 +7,29 @@ import useQueryParamsFilterHook from "~/app/hooks/useQueryParamsFilterHooks";
 import React from "react";
 import useDeviceType from "~/app/hooks/useDeviceTypeHook";
 import TransctionCard from './Cards'
+import { cloneDeep } from "lodash";
 
 const TransactionList = ({ responseData, isActiveJobs }: { responseData: POResponseType[], isActiveJobs?: boolean }) => {
 
     const deviceType = useDeviceType()
     const [shouldListRendered, setShouldLayoutRendered] = useState<boolean>(false);
+    const [isAppReady, setAppReady] = useState(false);
 
 
     const [poCounts, setPOCounts] = useState<POResponseType[]>([]);
-    useQueryParamsFilterHook(responseData, 'poNumber', 'search', (data) => {
+    useQueryParamsFilterHook(cloneDeep(responseData), 'poNumber', 'search', (data) => {
         setPOCounts(data as POResponseType[])
+        setAppReady(true);
     })
 
 
     useEffect(() => {
 
-        if (responseData) {
+        if (responseData && !isAppReady) {
             setPOCounts(responseData);
         }
 
-    }, [])
+    }, [responseData])
 
 
 
