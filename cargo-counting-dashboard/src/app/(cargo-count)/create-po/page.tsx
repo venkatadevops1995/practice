@@ -120,13 +120,13 @@ const CreatePOPage = () => {
   }
 
   return (
-    <div className="grid h-full w-full overflow-x-hidden overflow-y-auto grid-rows-[max-content,minmax(0,1fr)] pr-2">
+    <div className="grid h-full w-full relative overflow-x-hidden overflow-y-hidden grid-rows-[max-content,minmax(0,1fr)] pr-2">
       <div className="flex h-[50px] w-full items-center justify-start gap-x-[5px]">
         <MenuBar />
-        <span className="h-max w-full text-[24px] font-isb font-[500]"></span>
+        <span className="h-max w-full desktop:text-[24px] mobile:text-[16px] tablet:text-[16px] font-isb font-[500]">Active Cargo List</span>
       </div>
 
-      <div className="grid h-full w-full tablet:grid-cols-2 desktop:grid-cols-2 relative mobile:grid-rows-[minmax(0,0.9fr),max-content]">
+      <div className="grid h-full w-full overflow-hidden tablet:grid-cols-1 desktop:grid-cols-1 mobile:grid-rows-[minmax(0,0.9fr)]">
         <div className="grid w-full pl-2">
           {getActiveJobs && <ActiveJobsList  data={getActiveJobs}/>}
           {!getActiveJobs && (
@@ -144,8 +144,12 @@ const CreatePOPage = () => {
           )}
         </div>
         <Box
+          zIndex={99999999999}
+          position={'absolute'}
           overflowX={'hidden'}
+          height={'max-content'}
           as={motion.div}
+          right={5}
           animate={{ x: animateValue }}
           transition="0.1s linear"
           initial={true}

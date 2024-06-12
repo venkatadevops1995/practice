@@ -158,7 +158,7 @@ const CargoLivePage = () => {
             width={'280px'}
             alignSelf={'center'}
             height={'54px'}
-            borderRadius={'50px'}
+            borderRadius={'10px'}
             bg={'var(--app-btn-cancel)'}
             _hover={{ background: 'var(--app-btn-cancel)' }}
 

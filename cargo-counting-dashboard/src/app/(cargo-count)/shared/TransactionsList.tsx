@@ -32,7 +32,7 @@ const TransactionList = ({ responseData, isActiveJobs }: { responseData: PORespo
 
 
     useEffect(() => {
-        if (deviceType !== 'undefined' && deviceType === 'mobile') {
+        if (deviceType !== 'undefined' && deviceType === 'mobile' || isActiveJobs) {
             setShouldLayoutRendered(true)
         }
     }, [deviceType])
@@ -40,13 +40,15 @@ const TransactionList = ({ responseData, isActiveJobs }: { responseData: PORespo
     return (
         <>
             {shouldListRendered &&
-                <div className="grid  gap-y-[16px] bg-[#F1F1F1]   overflow-x-hidden w-full">
+              <div className="w-full grid">
+                    <div className="grid gap-x-[16px]  gap-y-[16px] bg-[#F1F1F1]  2xl:grid-cols-5 desktop:grid-cols-4 tablet:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-start  overflow-x-hidden" style={{gridTemplateColumns: !isActiveJobs  ? 'repeat(1,1fr)' : ''}}>
                     {poCounts?.length > 0 ? poCounts.map((co, i) => (
                         <TransctionCard isActiveJobs={isActiveJobs} key={i} data={co} />
                     )) : (
 
                         <NoRecordsFound>No Record Found!</NoRecordsFound>
                     )}
+                    </div>
                 </div>
             }
             {

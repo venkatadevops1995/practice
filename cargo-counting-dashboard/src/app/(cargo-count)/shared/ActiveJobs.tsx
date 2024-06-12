@@ -32,7 +32,8 @@ const ActiveJobsList  =    ({data}: {data:POResponseType[]})=> {
           </div>
           
           <div className='mobile:hidden desktop:block tablet:block h-[calc(100dvh-90px)]'>
-              <TableView responseData={getData} isActivePage={false}/>
+            <TransactionList isActiveJobs={true} responseData={getData} />
+
           </div>
         </div>
 

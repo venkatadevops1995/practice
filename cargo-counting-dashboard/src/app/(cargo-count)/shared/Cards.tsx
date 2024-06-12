@@ -37,7 +37,7 @@ const TransctionCard = ({ data, isActiveJobs }: { data: POResponseType, isActive
 
 
    return <>
-      <div onClick={navigateTolivePage} className="flex overflow-hidden flex-row justify-between items-center bg-[var(--app-card-body)] px-[8px] h-[70px] rounded-[8px]" style={{ boxShadow: '1px 2px 6px 0px #1919193D' }}>
+      <div onClick={navigateTolivePage} className="flex overflow-hidden cursor-pointer desktop:w-[320px] mobile:w-full tablet:w-[300px] flex-row justify-between items-center bg-[var(--app-card-body)] px-[8px] h-[70px] rounded-[8px]" style={{ boxShadow: '1px 2px 6px 0px #1919193D' }}>
          <div className="w-max">
             <div style={{ background: isActiveJobs ? '#F4B2B2' : 'var(--app-card-header)' }} className="w-[54px] h-[54px] overflow-hidden  rounded-full flex flex-col justify-center items-center">
                <Image className="w-[16px]" src="/images/cargo_icon.svg" alt="cargo_icon" />
@@ -77,7 +77,7 @@ const TransctionCard = ({ data, isActiveJobs }: { data: POResponseType, isActive
          }
 
          {
-            isActiveJobs && <ChevronRightIcon boxSize={'20px'} />
+            isActiveJobs && <div className="desktop:hidden tablet:hidden mobile:block"><ChevronRightIcon boxSize={'20px'} /></div> 
          }
       </div>
    </>
