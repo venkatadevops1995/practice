@@ -41,13 +41,22 @@ export default  forwardRef(function AlertDialogBox(props:AlertCallBacks,ref) {
         <AlertDialogOverlay />
 
         <AlertDialogContent>
-          <AlertDialogHeader>{props?.title}</AlertDialogHeader>
+          <AlertDialogHeader>
+              <span className="inter">
+              {props?.title}
+              </span>
+            </AlertDialogHeader>
           {/* <AlertDialogCloseButton /> */}
           <AlertDialogBody>
-            {props?.message}
+            <span className="inter">
+              {props?.message}
+              </span>
           </AlertDialogBody>
           <AlertDialogFooter>
-            {props?.children}
+            <span className="inter">
+              {props?.children}
+
+             </span>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

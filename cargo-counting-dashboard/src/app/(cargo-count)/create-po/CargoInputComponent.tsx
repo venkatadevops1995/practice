@@ -82,7 +82,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
     <>
       <div className="mobile:rounded-tl-[24px] mobile:rounded-tr-[24px] tablet:rounded-tl-[0px] tablet:rounded-tr-[0px] p-[20px] max-h-[40vh] w-full flex flex-col gap-y-[20px] justify-between overflow-auto desktop:bg-white tablet:bg-white mobile:bg-[var(--app-card-body)]">
         {title && <div className="flex justify-between items-center">
-          <div className="text-[var(--app-text-clr)]">New Cargo</div>
+          <div className="text-[var(--app-text-clr)] font-isb inter">New Cargo</div>
           <Image
             cursor={'pointer'}
             onClick={close}
@@ -91,7 +91,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
           />
         </div>}
         <div className="flex flex-col gap-y-[2px]">
-          <span className="font-[600] text-[var(--app-text-clr)] opacity-[0.55]">
+          <span className="font-[600] text-[var(--app-text-clr)] inter opacity-[0.55]">
             PO Number
           </span>
           <Input
@@ -114,7 +114,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
             alignSelf={'center'}
             _hover={{ background: 'var(--app-btn-bg)' }}
             bg={'var(--app-btn-bg)'}
-            className={`${!isFormValid ? '' : 'no-ptr'}`}
+            className={`${!isFormValid ? '' : 'no-ptr'} inter`}
           >
             Start
           </Button>
@@ -129,6 +129,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
             _hover={{ background: 'var(--app-btn-close)' }}
             alignSelf={'center'}
             bg={'var(--app-btn-close)'}
+            className='inter'
           >
             Back
           </Button>
@@ -141,7 +142,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
             alignSelf={'center'}
             _hover={{ background: 'var(--app-btn-bg)' }}
             bg={'var(--app-btn-bg)'}
-            className={`${!isFormValid ? '' : 'no-ptr'}`}
+            className={`${!isFormValid ? '' : 'no-ptr'} inter`}
           >
             Start
           </Button>

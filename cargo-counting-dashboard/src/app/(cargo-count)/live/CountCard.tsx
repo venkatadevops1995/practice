@@ -38,7 +38,7 @@ const CountCard = ({liveData}:{liveData:POResponseType | undefined}) => {
         </div>
       </div>
 
-      <span className="font-inter opacity-65 absolute right-8 text-[14px]">
+      <span className="inter opacity-65 absolute right-8 text-[14px]">
         <DisplayTimeAgo timestamp={getLiveData?.startAt}/>
       </span>
     </div>

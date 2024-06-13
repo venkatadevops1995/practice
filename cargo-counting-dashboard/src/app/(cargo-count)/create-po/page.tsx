@@ -137,7 +137,7 @@ const CreatePOPage = () => {
                 style={{ aspectRatio: '16 / 9', width: '90%', height: '90%' }}
               />
 
-              <div className="font-inter font-[500] text-center">
+              <div className="inter font-[500] text-center">
                 No, Active Cargo counting at the moment
               </div>
             </div>
@@ -165,7 +165,7 @@ const CreatePOPage = () => {
           )}
         </Box>
         {shouldIconVisible && (
-          <div className="flex w-full justify-end absolute bottom-[35px] right-[31px]">
+          <div className="flex w-max justify-end absolute bottom-[35px] right-[31px]">
             <div
               onClick={() => onHandleSlide('forward')}
               className="relative h-[50px] w-[50px] bg-[var(--overlay-bg)] rounded-[12px]"

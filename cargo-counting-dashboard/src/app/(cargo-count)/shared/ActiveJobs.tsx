@@ -26,12 +26,12 @@ const ActiveJobsList  =    ({data}: {data:POResponseType[]})=> {
 
     return  <>
         
-        <div className="w-full h-full">
-         <div className='mobile:block desktop:hidden tablet:hidden overflow-auto grid overflow-y-auto overflow-x-hidden h-[calc(100dvh-90px)] w-full px-2'>
+        <div className="w-full h-full ">
+            <div className='mobile:block desktop:hidden tablet:hidden overflow-auto grid overflow-y-auto overflow-x-hidden h-[calc(100dvh-90px)] w-full px-2'>
              <TransactionList isActiveJobs={true}  responseData={getData}/>
           </div>
           
-          <div className='mobile:hidden desktop:block tablet:block h-[calc(100dvh-90px)]'>
+            <div className='mobile:hidden desktop:block tablet:block h-[calc(100dvh-90px)] grid overflow-y-auto'>
             <TransactionList isActiveJobs={true} responseData={getData} />
 
           </div>

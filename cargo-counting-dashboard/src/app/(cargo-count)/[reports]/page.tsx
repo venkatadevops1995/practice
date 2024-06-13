@@ -18,7 +18,7 @@ const ReportPage = async () => {
   return (
     <>
       <div className="grid w-full grid-rows-[max-content,minmax(0,1fr)] gap-y-[10px]">
-        <div className="flex  mobile:flex-col tablet:flex-row  tablet:justify-between desktop:flex-row desktop:justify-between">
+        <div className="flex  mobile:flex-col gap-y-[20px] tablet:flex-row  tablet:justify-between desktop:flex-row desktop:justify-between">
           <GoBackBtn title={'Reports'} path={"/create-po"}/>
           <div className="desktop:w-[400px] cursor-pointer flex items-center">
             <SearchQuery/>
@@ -26,8 +26,7 @@ const ReportPage = async () => {
         </div>
 
           <div
-          className='grid overflow: hidden;
-    height: 100%;'
+          className='grid overflow:hidden'
          >
 
 

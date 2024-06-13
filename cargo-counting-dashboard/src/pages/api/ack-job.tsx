@@ -9,6 +9,8 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponseWithSocket
 ) {
+
+    console.log("status",req);
    
     try {
         res.socket.server.io?.emit('ack-job', {});
