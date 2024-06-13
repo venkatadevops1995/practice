@@ -30,7 +30,7 @@ const ReportPage = async () => {
          >
 
 
-          <div className='mobile:block desktop:hidden tablet:hidden overflow-auto grid overflow-y-auto overflow-x-hidden h-[calc(100dvh-90px)] w-full px-2'>
+          <div className='mobile:block desktop:hidden tablet:hidden overflow-auto grid overflow-y-auto overflow-x-hidden h-[calc(100dvh-109px)] w-full px-2'>
              <TransactionList  responseData={getPoCounts}/>
           </div>
           

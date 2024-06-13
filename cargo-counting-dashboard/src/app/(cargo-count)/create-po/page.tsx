@@ -3,7 +3,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react'
-import { Box, Image } from '@chakra-ui/react'
+import { Box, Image, useToast } from '@chakra-ui/react'
 import MenuBar from './Menubar'
 import SlideTransition from '../../components/SlideTransition'
 import CargoInputComponent from './CargoInputComponent'
@@ -18,6 +18,8 @@ import { defaultJob } from '../_RequestHandlers/live-request-handler'
 import { AppEventEnum, type POResponseType } from '~/pages/api/api-typings'
 import { getAllActiveJobs } from '../_RequestHandlers/create-po-request-handler'
 import ActiveJobsList from '../shared/ActiveJobs'
+import useWebSocketConnectionHook from '~/app/hooks/useWebsocketHook';
+import { AckEventType } from '../typings/cargo-typings';
 
 const CreatePOPage = () => {
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
@@ -25,12 +27,16 @@ const CreatePOPage = () => {
   >(false)
   const { dispatch } = useApplicationContext()
   const { setLoader, setError } = useHttpClientHandler()
+  const toast = useToast();
+
+
+
 
   const [animateValue, setAnimateValue] = useState<number>(200)
 
   const getDeviceType = useDeviceType()
   const [shouldIconVisible, setIconVisibility] = useState<boolean>(false)
-  const [getActiveJobs,setActiveJobs] = useState<POResponseType[]>([])
+  const [getActiveJobs, setActiveJobs] = useState<POResponseType[]>([])
 
   const toggleSlideRef = useRef<any>(null)
 
@@ -70,7 +76,7 @@ const CreatePOPage = () => {
   }, [dataActiveJob])
 
 
-    useEffect(() => {
+  useEffect(() => {
     if (isPending) {
       setLoader(true)
     }
@@ -89,18 +95,15 @@ const CreatePOPage = () => {
       setLoader(false)
     }
   }, [data])
-  
-  
-  
+
+
+
   useEffect(() => {
     if (getDeviceType) {
       setIconVisibility(true)
       setCardOpenForDesktopTablet(false)
     }
   }, [getDeviceType])
-
-
-
 
   const onHandleSlide = (action: unknown) => {
     if (getDeviceType !== 'mobile') {
@@ -119,6 +122,26 @@ const CreatePOPage = () => {
     }
   }
 
+  // Ack event
+  const onAckEvent = (data: AckEventType) => {
+    console.log(data,"check data")
+    if (data) {
+      toast({
+        title: `${data?.job_id}`,
+        position: 'top',
+        isClosable: true,
+        variant: '',
+        containerStyle: {
+          background: 'var(--overlay-bg)',
+          borderRadius: '8px'
+
+        }
+      })
+    }
+  }
+  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, (data) => onAckEvent(data as AckEventType));
+
+
   return (
     <div className="grid h-full w-full relative overflow-x-hidden overflow-y-hidden grid-rows-[max-content,minmax(0,1fr)] pr-2">
       <div className="flex h-[50px] w-full items-center justify-start gap-x-[5px]">
@@ -128,7 +151,7 @@ const CreatePOPage = () => {
 
       <div className="grid h-full w-full overflow-hidden tablet:grid-cols-1 desktop:grid-cols-1 mobile:grid-rows-[minmax(0,0.9fr)]">
         <div className="grid w-full pl-2 mt-[20px]">
-          {getActiveJobs && <ActiveJobsList  data={getActiveJobs}/>}
+          {getActiveJobs && <ActiveJobsList data={getActiveJobs} />}
           {!getActiveJobs && (
             <div>
               <Image
@@ -180,7 +203,7 @@ const CreatePOPage = () => {
         )}
       </div>
       <SlideTransition ref={toggleSlideRef} direction="bottom">
-        { getDeviceType!=='undefined' && getDeviceType === 'mobile' && (
+        {getDeviceType !== 'undefined' && getDeviceType === 'mobile' && (
           <CargoInputComponent title="New Cargo" close={onHandleSlide} />
         )}
       </SlideTransition>

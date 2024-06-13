@@ -49,7 +49,7 @@ const MessageBox = ({ dialogDetails, confirmBtnEmitter }: { dialogDetails?: Mess
   return (
     <Modal onClose={handleClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
-      <ModalContent minWidth="400px" maxWidth="450px">
+      <ModalContent className='mobile:w-[300px] desktop:w-[400px] tablet:w-[400px]'>
         <ModalHeader>
           <Box display="flex" alignItems="center" boxShadow={'none'}>
             <IconButton boxShadow={'none'} aria-label="Message Icon" icon={<MessageIcon />} variant="unstyled"  autoFocus={false}/>

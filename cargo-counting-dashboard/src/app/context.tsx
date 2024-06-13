@@ -12,6 +12,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HttpLoader from "./components/Loader";
 import ErrorDialog from "./components/ErrorDialog";
 import useWebSocketConnectionHook from "./hooks/useWebsocketHook";
+import initWebsocketConnections from "./websocket/websocket-connection";
 
 
 
@@ -20,7 +21,9 @@ export type GlobalState = {
   runtime_env: string | null;
   error: any;
   selectedActiveData: POResponseType | null;
+  ack_data:any;
   loader: { state: boolean; text?: string } | null;
+  webSocketData: any
 };
 
 export type ApplicationType = {
@@ -71,12 +74,20 @@ const reducer = (state: GlobalState, action: any):GlobalState => {
 
   switch (action.type) {
 
+
     case AppEventEnum.LIVE_COUNT:
         
        return  {
           ...state,
           liveCountData: action.payload
        }
+
+    case AppEventEnum.ACK_EVENT:
+
+      return {
+        ...state,
+        ack_data: action.payload
+      }
 
     case AppEventEnum.SELCTED_LIVE_DATA:
 
@@ -98,6 +109,14 @@ const reducer = (state: GlobalState, action: any):GlobalState => {
         ...state,
         error: action.payload
       }
+
+    case AppEventEnum.WEBSOCKET_EVENT:
+
+      return {
+        ...state,
+        webSocketData: action.payload
+      }
+
 
       case AppEventEnum.LOADER:
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -129,12 +148,21 @@ const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
     runtime_env: null,
     error: null,
     loader: null,
-    selectedActiveData: null
+    selectedActiveData: null,
+    ack_data: null,
+    webSocketData: null
   };
   const [state, dispatch] = useReducer(reducer, data);
- 
-  useWebSocketConnectionHook((data) => dispatch({ type: AppEventEnum.LIVE_COUNT, payload: data }), AppEventEnum.LIVE_COUNT);  
 
+  // Please register all websocket  events
+  initWebsocketConnections([AppEventEnum.ACK_EVENT,AppEventEnum.LIVE_COUNT],(data)=> {
+    dispatch({type: AppEventEnum.WEBSOCKET_EVENT,  payload: data});
+  });
+
+
+  
+
+ 
   return (
     <applicationContext.Provider value={{ state, dispatch }}>
           <QueryClientProvider client={queryClient}>

@@ -1,47 +1,18 @@
-import { useEffect, useRef } from "react";
-import { io } from "socket.io-client";
 import { type AppEventEnum } from "~/pages/api/api-typings";
+import { useApplicationContext } from "../context";
+import { useEffect } from "react";
 
-const useWebSocketConnectionHook = (cb:(arg:unknown)=>void,event: AppEventEnum)=> {
+const useWebSocketConnectionHook = (event: AppEventEnum, cb: (arg: unknown) => void) => {
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const socketRef = useRef<any>(null);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function socketClient() {
-    const socket = io({
-      transports: ["websocket"],
-    });
-
-    socket.on("connect", () => {
-      socket.on(event as unknown as string, (data) => {
-        cb(data);
-      });
-      console.log("Connected");
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Disconnected");
-    });
-
-    socket.on("connect_error", async (err) => {
-      console.log(`connect_error due to ${err.message}`);
-      await fetch('/api/socket');
-    });
-
-  
-    socketRef.current = socket;
-  }
+  const { state } = useApplicationContext();
 
   useEffect(() => {
-    socketClient();
-    return ()=> {
-      socketRef?.current?.disconnect();
+    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+    if (state && state.webSocketData && state.webSocketData.event === event) {
+      cb(state.webSocketData);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[event]);
-
+  }, [state, event, cb]); // Include event and cb in the dependency array
 
 }
 
-export default useWebSocketConnectionHook;
+export default useWebSocketConnectionHook

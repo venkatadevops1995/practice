@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaClient } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import type { NextApiResponseWithSocket, PORequestType } from './api-typings';
+import type { NextApiRequest } from 'next';
+import type { NextApiResponseWithSocket } from './api-typings';
 
 const prisma = new PrismaClient();
 
@@ -10,10 +10,10 @@ export default async function handler(
     res: NextApiResponseWithSocket
 ) {
 
-    console.log("status",req);
-   
+     
+    const data = await req.body;
     try {
-        res.socket.server.io?.emit('ack-job', {});
+        res.socket.server.io?.emit('ack-event', data);
         res.status(200).json({});
 
     } catch (error) {

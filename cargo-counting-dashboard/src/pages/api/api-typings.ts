@@ -33,5 +33,7 @@ export enum AppEventEnum {
   RUN_TIME_ENV = "run_time_env",
   SELCTED_LIVE_DATA = 'selected_live_data',
   ERROR = 'error',
-  LOADER = 'loader'
+  LOADER = 'loader',
+  ACK_EVENT='ack-event',
+  WEBSOCKET_EVENT='websocket-event'
 }

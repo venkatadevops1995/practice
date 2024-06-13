@@ -1,4 +1,4 @@
-import { useDisclosure, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter ,AlertDialog } from "@chakra-ui/react"
+import { useDisclosure, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter ,AlertDialog, Box } from "@chakra-ui/react"
 import React, { forwardRef, useImperativeHandle } from "react"
 
 
@@ -30,7 +30,7 @@ export default  forwardRef(function AlertDialogBox(props:AlertCallBacks,ref) {
 
 
   return (
-    <>
+    <Box display={'none'}>
       <AlertDialog
         motionPreset='slideInBottom'
         leastDestructiveRef={cancelRef}
@@ -60,6 +60,6 @@ export default  forwardRef(function AlertDialogBox(props:AlertCallBacks,ref) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </Box>
   )
 })

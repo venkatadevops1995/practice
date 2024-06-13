@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button, Image } from "@chakra-ui/react";
+import { Button, Image, useToast } from "@chakra-ui/react";
 import CountCard from "./CountCard";
 import { AppEventEnum, type PORequestType, type POResponseType } from "~/pages/api/api-typings";
 import React from "react";
@@ -14,9 +14,12 @@ import { startStopCountRequestHandler } from "../_RequestHandlers/create-po-requ
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useHttpClientHandler from "~/app/hooks/useHttpLoader";
 import GoBackBtn from '~/app/components/BackBtn'
+import useWebSocketConnectionHook from "~/app/hooks/useWebsocketHook";
+import { type AckEventType } from "../typings/cargo-typings";
 
 const CargoLivePage = () => {
   const { state, dispatch } = useApplicationContext()
+  const toast = useToast();
   const { setLoader, setError } = useHttpClientHandler()
   const [getCargoEvent, setCargoEvent] = useState<POResponseType>();
   const alertRef = useRef<any>(null);
@@ -32,7 +35,7 @@ const CargoLivePage = () => {
   const requestJobMutation = useMutation({
     mutationFn: () => startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '', 'stop', state?.runtime_env),
     onSuccess: (startResponse) => {
-    
+
       if ([200, 201].includes(startResponse.status)) {
         const startPayload: PORequestType = {
           startAt: '',
@@ -107,6 +110,7 @@ const CargoLivePage = () => {
 
 
 
+  // After navigate check is the same id else redirect to job creation page
   useEffect(() => {
     if (state?.selectedActiveData) {
       setCargoEvent(state?.selectedActiveData ?? undefined)
@@ -114,31 +118,42 @@ const CargoLivePage = () => {
     else {
       route.push('/create-po')
     }
-
-
-    return ()=> {
+    return () => {
       dispatch({ type: AppEventEnum.SELCTED_LIVE_DATA, payload: null })
-
     }
-
-
   }, [params])
 
 
 
-  useEffect(()=> {
-    if (state?.liveCountData) {
+
+  const onLiveEvent = (data: POResponseType) => {
+    if (data) {
       const getId = params?.get('active');
-      if (getId === state?.liveCountData?.poNumber) {
-        setCargoEvent(state?.liveCountData ?? undefined)
+      if (getId === data?.poNumber) {
+        setCargoEvent(data ?? undefined)
       }
     }
-  } ,[state])
+  }
+
+  const onAckEvent = (data: AckEventType) => {
+    if (data) {
+      toast({
+        title: `${data?.job_id}`,
+        position: 'top',
+        isClosable: true,
+        variant: '',
+        containerStyle: {
+          background: 'var(--overlay-bg)',
+          borderRadius:'8px'
+        }
+      })
+    }
+  }
 
 
-
-
-
+  // Subscripbe for live count
+  useWebSocketConnectionHook(AppEventEnum.LIVE_COUNT, (data) => onLiveEvent(data as POResponseType));
+  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, (data) => onAckEvent(data as AckEventType));
 
 
 
@@ -161,7 +176,7 @@ const CargoLivePage = () => {
             type="submit"
             width={'280px'}
             alignSelf={'center'}
-            height={'54px'}
+            height={'42px'}
             borderRadius={'10px'}
             bg={'var(--app-btn-cancel)'}
             _hover={{ background: 'var(--app-btn-cancel)' }}
