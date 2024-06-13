@@ -124,10 +124,9 @@ const CreatePOPage = () => {
 
   // Ack event
   const onAckEvent = (data: AckEventType) => {
-    console.log(data,"check data")
     if (data) {
       toast({
-        title: `${data?.job_id}`,
+        title: `${data?.message} for job ${data?.job_id}`,
         position: 'top',
         isClosable: true,
         variant: '',

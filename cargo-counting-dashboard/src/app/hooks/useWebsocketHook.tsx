@@ -11,6 +11,7 @@ const useWebSocketConnectionHook = (event: AppEventEnum, cb: (arg: unknown) => v
     if (state && state.webSocketData && state.webSocketData.event === event) {
       cb(state.webSocketData);
     }
+
   }, [state, event, cb]); // Include event and cb in the dependency array
 
 }

@@ -14,6 +14,9 @@ export default async function handler(
     const data = await req.body;
     try {
         res.socket.server.io?.emit('ack-event', data);
+        setTimeout(()=> {
+            res?.socket?.server?.io?.emit('ack-event', null);
+        },2000)
         res.status(200).json({});
 
     } catch (error) {

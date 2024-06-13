@@ -138,7 +138,7 @@ const CargoLivePage = () => {
   const onAckEvent = (data: AckEventType) => {
     if (data) {
       toast({
-        title: `${data?.job_id}`,
+        title: `${data?.message} for job ${data?.job_id}`,
         position: 'top',
         isClosable: true,
         variant: '',
