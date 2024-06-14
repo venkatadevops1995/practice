@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 "use client";
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
@@ -6,13 +7,15 @@ import React, {
   createContext,
   useContext,
   useReducer,
+  useMemo,
 } from "react";
 import { type POResponseType, AppEventEnum } from "~/pages/api/api-typings";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HttpLoader from "./components/Loader";
 import ErrorDialog from "./components/ErrorDialog";
 import initWebsocketConnections from "./websocket/websocket-connection";
-
+import LoaderProvider from "./LoaderProvider";
+import { useJustandStore } from "./justand";
 
 
 export type GlobalState = {
@@ -20,9 +23,9 @@ export type GlobalState = {
   runtime_env: string | null;
   error: any;
   selectedActiveData: POResponseType | null;
-  ack_data:any;
+  ack_data: any;
   loader: { state: boolean; text?: string } | null;
-  webSocketData: any
+  webSocketData: any;
 };
 
 export type ApplicationType = {
@@ -46,19 +49,14 @@ type ErrorEvent = {
   payload: any;
 };
 
-
 type LoaderEvent = {
    type: AppEventEnum.LOADER;
    payload: { state: boolean; text?: string }
-}
+};
 
 export type AppEvent = LiveCountEvent | RunTimeEnvEvent | ErrorEvent | LoaderEvent;
 
-
-
-const applicationContext = createContext<ApplicationType | undefined>(
-  undefined,
-) 
+const applicationContext = createContext<ApplicationType | undefined>(undefined);
 
 const useApplicationContext = () => {
   const context = useContext(applicationContext);
@@ -69,80 +67,32 @@ const useApplicationContext = () => {
   return context;
 };
 
-const reducer = (state: GlobalState, action: any):GlobalState => {
-
-  switch (action.type) {
-
-
+const reducer = (state: GlobalState, action: AppEvent): GlobalState => {
+  switch (action.type as any) {
     case AppEventEnum.LIVE_COUNT:
-        
-       return  {
-          ...state,
-          liveCountData: action.payload
-       }
-
+      return { ...state, liveCountData: action.payload };
     case AppEventEnum.ACK_EVENT:
-
-      return {
-        ...state,
-        ack_data: action.payload
-      }
-
+      return { ...state, ack_data: action.payload };
     case AppEventEnum.SELCTED_LIVE_DATA:
-
-      return {
-        ...state,
-        selectedActiveData: action.payload
-      }
-
-    
-     case AppEventEnum.RUN_TIME_ENV:
-        
-       return  {
-          ...state,
-          runtime_env: action.payload
-       }
-
+      return { ...state, selectedActiveData: action.payload };
+    case AppEventEnum.RUN_TIME_ENV:
+      return { ...state, runtime_env: action.payload };
     case AppEventEnum.ERROR:
-      return  {
-        ...state,
-        error: action.payload
-      }
-
+      return { ...state, error: action.payload };
     case AppEventEnum.WEBSOCKET_EVENT:
-
-      return {
-        ...state,
-        webSocketData: action.payload
-      }
-
-
-      case AppEventEnum.LOADER:
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return  {
-        ...state,
-         loader: {
-           state: action.payload.state,text: action.payload.text
-         }
-      }
-
+      return { ...state, webSocketData: action.payload };
+    case AppEventEnum.LOADER:
+      return { ...state, loader: { state: action.payload.state, text: action.payload.text } };
     default:
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return {
-        ...state,
-      };
+      return state;
   }
 };
 
-// Create the Wrapper Provider
+const ApplicationProvider = React.memo(({ children }: { children: React.ReactNode }) => {
+  const [queryClient] = React.useState(() => new QueryClient());
+    
 
-const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
-
- const [queryClient] = React.useState(() => new QueryClient());
-
-
-
-  const data: GlobalState = {
+  const initialState: GlobalState = {
     liveCountData: null,
     runtime_env: null,
     error: null,
@@ -151,35 +101,20 @@ const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
     ack_data: null,
     webSocketData: null
   };
-  const [state, dispatch] = useReducer(reducer, data);
 
-  // Please register all websocket  events
-  initWebsocketConnections([AppEventEnum.ACK_EVENT,AppEventEnum.LIVE_COUNT],(data)=> {
-    dispatch({type: AppEventEnum.WEBSOCKET_EVENT,  payload: data});
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-
+  const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
   
-
- 
   return (
-    <applicationContext.Provider value={{ state, dispatch }}>
-          <QueryClientProvider client={queryClient}>
-          {
-             state?.loader?.state  &&
-             <div className="bg-[var(--http-loader-bg)] fixed w-screen h-screen z-[9999999999]">
-             
-             </div>
-          }
-           {
-            state?.loader?.state &&
-          <HttpLoader text={state?.loader.text ?? 'fetching...'}/>
-           }
-           {children}
+    <QueryClientProvider client={queryClient}>
+      <applicationContext.Provider value={contextValue}>
+        {children}
+        <LoaderProvider/>
         <ErrorDialog/>
-      </QueryClientProvider>
-    </applicationContext.Provider>
+      </applicationContext.Provider>
+    </QueryClientProvider>
   );
-};
+});
 
 export { ApplicationProvider, useApplicationContext };

@@ -22,6 +22,8 @@ import useWebSocketConnectionHook from '~/app/hooks/useWebsocketHook';
 import { type AckEventType } from '../typings/cargo-typings';
 
 const CreatePOPage = () => {
+
+
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
     boolean
   >(false)
@@ -126,10 +128,7 @@ const CreatePOPage = () => {
   }
 
   // Ack event
-  const onAckEvent = (toast: any, data: AckEventType) => {
-    console.log("how manay time i ran.....")
-
-    if (data) {
+  const onAckEvent = (data: AckEventType) => {
       toast({
         title: `${data?.message} for job ${data?.job_id}`,
         position: 'top',
@@ -141,11 +140,8 @@ const CreatePOPage = () => {
 
         }
       })
-    }
   }
-  const onAckEventCallback = useCallback((data) => onAckEvent(toast, data as AckEventType), [toast]);
-
-  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEventCallback);
+  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEvent);
 
   return (
     <div suppressHydrationWarning className="grid h-full w-full relative overflow-x-hidden overflow-y-hidden grid-rows-[max-content,minmax(0,1fr)] pr-2">

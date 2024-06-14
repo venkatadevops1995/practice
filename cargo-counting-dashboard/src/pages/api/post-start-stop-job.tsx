@@ -15,7 +15,7 @@ export default async function handler(
   let messsage = ''
 
   try {
-      const res = await fetch('http://172.16.120.98:8265/api/jobs/',{
+    const res = await fetch(`${process.env.SERVER_RAY_PIPELINE_URL}`,{
       method: 'POST',
       body: JSON.stringify(reqData)
     })

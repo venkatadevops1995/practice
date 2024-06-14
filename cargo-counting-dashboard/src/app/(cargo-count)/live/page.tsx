@@ -32,6 +32,7 @@ const CargoLivePage = () => {
 
 
 
+
   const requestJobMutation = useMutation({
     mutationFn: () => startStopCountRequestHandler(getCargoEvent?.po_number ?? getCargoEvent?.poNumber ?? '', 'stop', state?.runtime_env),
     onSuccess: (startResponse) => {
@@ -139,13 +140,7 @@ const CargoLivePage = () => {
 
   // Subscripbe for live count
   useWebSocketConnectionHook(AppEventEnum.LIVE_COUNT, (data) => onLiveEvent(data as POResponseType));
-
-  // Ack event
-  const onAckEvent = (toast: any, data: AckEventType) => {
-
-    console.log("how manay time i ran.....")
-
-    if (data) {
+    const onAckEvent = (data: AckEventType) => {
       toast({
         title: `${data?.message} for job ${data?.job_id}`,
         position: 'top',
@@ -157,11 +152,8 @@ const CargoLivePage = () => {
 
         }
       })
-    }
   }
-  const onAckEventCallback = useCallback((data) => onAckEvent(toast, data as AckEventType), [toast]);
-
-  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEventCallback);
+  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEvent);
 
 
   return (

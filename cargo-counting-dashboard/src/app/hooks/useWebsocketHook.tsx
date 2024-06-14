@@ -1,20 +1,17 @@
 import { type AppEventEnum } from "~/pages/api/api-typings";
 import { useApplicationContext } from "../context";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { useJustandStore } from "../justand";
 
 const useWebSocketConnectionHook = (event: AppEventEnum, cb: (arg: unknown) => void) => {
+  const  websocketData = useJustandStore((state)=>state.websocketData)
 
-  const { state } = useApplicationContext();
-
-  useCallback(() => {
+  useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-    if (state && state?.webSocketData && state?.webSocketData?.event === event) {
-      cb(state?.webSocketData);
+    if (websocketData  && websocketData?.event === event) {
+      cb(websocketData);
     }
-
-    
-
-  }, [state]); // Include event and cb in the dependency array
+  }, [websocketData]); // Include event and cb in the dependency array
 
 }
 
