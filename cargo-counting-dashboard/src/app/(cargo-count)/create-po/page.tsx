@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Image, useToast } from '@chakra-ui/react'
 import MenuBar from './Menubar'
 import SlideTransition from '../../components/SlideTransition'
@@ -126,7 +126,9 @@ const CreatePOPage = () => {
   }
 
   // Ack event
-  const onAckEvent = (data: AckEventType) => {
+  const onAckEvent = (toast: any, data: AckEventType) => {
+    console.log("how manay time i ran.....")
+
     if (data) {
       toast({
         title: `${data?.message} for job ${data?.job_id}`,
@@ -141,8 +143,9 @@ const CreatePOPage = () => {
       })
     }
   }
-  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, (data) => onAckEvent(data as AckEventType));
+  const onAckEventCallback = useCallback((data) => onAckEvent(toast, data as AckEventType), [toast]);
 
+  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEventCallback);
 
   return (
     <div suppressHydrationWarning className="grid h-full w-full relative overflow-x-hidden overflow-y-hidden grid-rows-[max-content,minmax(0,1fr)] pr-2">
@@ -169,7 +172,7 @@ const CreatePOPage = () => {
           )}
         </div>
         <Box
-          zIndex={99999999999}
+          zIndex={999}
           position={'absolute'}
           overflowX={'hidden'}
           height={'max-content'}

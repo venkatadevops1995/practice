@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Image, useToast } from "@chakra-ui/react";
 import CountCard from "./CountCard";
 import { AppEventEnum, type PORequestType, type POResponseType } from "~/pages/api/api-typings";
@@ -135,7 +135,16 @@ const CargoLivePage = () => {
     }
   }
 
-  const onAckEvent = (data: AckEventType) => {
+
+
+  // Subscripbe for live count
+  useWebSocketConnectionHook(AppEventEnum.LIVE_COUNT, (data) => onLiveEvent(data as POResponseType));
+
+  // Ack event
+  const onAckEvent = (toast: any, data: AckEventType) => {
+
+    console.log("how manay time i ran.....")
+
     if (data) {
       toast({
         title: `${data?.message} for job ${data?.job_id}`,
@@ -144,17 +153,15 @@ const CargoLivePage = () => {
         variant: '',
         containerStyle: {
           background: 'var(--overlay-bg)',
-          borderRadius:'8px'
+          borderRadius: '8px'
+
         }
       })
     }
   }
+  const onAckEventCallback = useCallback((data) => onAckEvent(toast, data as AckEventType), [toast]);
 
-
-  // Subscripbe for live count
-  useWebSocketConnectionHook(AppEventEnum.LIVE_COUNT, (data) => onLiveEvent(data as POResponseType));
-  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, (data) => onAckEvent(data as AckEventType));
-
+  useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEventCallback);
 
 
   return (

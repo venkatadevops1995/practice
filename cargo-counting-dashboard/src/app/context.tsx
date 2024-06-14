@@ -11,7 +11,6 @@ import { type POResponseType, AppEventEnum } from "~/pages/api/api-typings";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HttpLoader from "./components/Loader";
 import ErrorDialog from "./components/ErrorDialog";
-import useWebSocketConnectionHook from "./hooks/useWebsocketHook";
 import initWebsocketConnections from "./websocket/websocket-connection";
 
 
@@ -174,7 +173,7 @@ const ApplicationProvider = ({ children }: { children: React.ReactNode }) => {
           }
            {
             state?.loader?.state &&
-            <HttpLoader/>
+          <HttpLoader text={state?.loader.text ?? 'fetching...'}/>
            }
            {children}
         <ErrorDialog/>
