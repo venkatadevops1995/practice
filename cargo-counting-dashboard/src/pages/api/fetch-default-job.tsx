@@ -11,7 +11,7 @@ export default async function handler(
 
   let statusCode = 200;
   let messsage;
-  const job_id = "cluster_job";
+  const job_id = "test_job";
 
   try {
     const apiRes = await fetch(`${process.env.SERVER_RAY_PIPELINE_URL}`,{
