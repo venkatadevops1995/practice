@@ -80,7 +80,7 @@ const CargoInputComponent = ({ close, title }: { close: (arg: unknown) => void, 
 
   return (
     <>
-      <div className="mobile:rounded-tl-[24px] mobile:rounded-tr-[24px] tablet:rounded-tl-[0px] tablet:rounded-tr-[0px] p-[20px] max-h-[40vh] w-full flex flex-col gap-y-[20px] justify-between overflow-auto desktop:bg-white tablet:bg-white mobile:bg-[var(--app-card-body)]">
+      <div suppressHydrationWarning className="mobile:rounded-tl-[24px] mobile:rounded-tr-[24px] tablet:rounded-tl-[0px] tablet:rounded-tr-[0px] p-[20px] max-h-[40vh] w-full flex flex-col gap-y-[20px] justify-between overflow-auto desktop:bg-white tablet:bg-white mobile:bg-[var(--app-card-body)]">
         {title && <div className="flex justify-between items-center">
           <div className="text-[var(--app-text-clr)] font-isb inter">New Cargo</div>
           <Image

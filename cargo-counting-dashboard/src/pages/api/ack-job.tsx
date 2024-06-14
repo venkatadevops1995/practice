@@ -12,6 +12,7 @@ export default async function handler(
 
      
     const data = await req.body;
+    console.log(typeof data,"check data")
     try {
         res.socket.server.io?.emit('ack-event', data);
         setTimeout(()=> {

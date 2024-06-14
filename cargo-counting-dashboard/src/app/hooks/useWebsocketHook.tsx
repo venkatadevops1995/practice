@@ -12,7 +12,7 @@ const useWebSocketConnectionHook = (event: AppEventEnum, cb: (arg: unknown) => v
       cb(state.webSocketData);
     }
 
-  }, [state, event, cb]); // Include event and cb in the dependency array
+  }, [state]); // Include event and cb in the dependency array
 
 }
 

@@ -20,10 +20,13 @@ const initWebsocketConnections = (events: AppEventEnum[],cb:(arg: any)=>void)=> 
      
     //   Please iterate each event
       events?.forEach(event=> {
-          socket?.on(event as unknown as string, (data) => {
+          socket?.on(event as unknown as string, async (data) => {
             // monkey patch the event
-                data.event = event;
-                cb(data);         
+            if(typeof data === 'object') {
+              // eslint-disable-next-line @typescript-eslint/dot-notation
+              data['event'] =  (event ?? '' as string);
+              cb(data);         
+            }
           });
          
       })

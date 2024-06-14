@@ -19,7 +19,7 @@ import { AppEventEnum, type POResponseType } from '~/pages/api/api-typings'
 import { getAllActiveJobs } from '../_RequestHandlers/create-po-request-handler'
 import ActiveJobsList from '../shared/ActiveJobs'
 import useWebSocketConnectionHook from '~/app/hooks/useWebsocketHook';
-import { AckEventType } from '../typings/cargo-typings';
+import { type AckEventType } from '../typings/cargo-typings';
 
 const CreatePOPage = () => {
   const [isCardOpenForDesktopTablet, setCardOpenForDesktopTablet] = useState<
@@ -28,8 +28,7 @@ const CreatePOPage = () => {
   const { dispatch } = useApplicationContext()
   const { setLoader, setError } = useHttpClientHandler()
   const toast = useToast();
-
-
+  const [shouldMobileLayoutRender, setShouldMobileLayoutRender] = useState<boolean>(false);
 
 
   const [animateValue, setAnimateValue] = useState<number>(200)
@@ -66,7 +65,7 @@ const CreatePOPage = () => {
       setLoader(false)
       setError(error)
     }
-  }, [isErrorActiveJob, errorActiveJob, isPendingActiveJob])
+  }, [isErrorActiveJob, errorActiveJob, isPendingActiveJob,error])
 
   useEffect(() => {
     if (dataActiveJob) {
@@ -99,14 +98,18 @@ const CreatePOPage = () => {
 
 
   useEffect(() => {
-    if (getDeviceType) {
+    if (typeof window !== 'undefined' && getDeviceType) {
       setIconVisibility(true)
       setCardOpenForDesktopTablet(false)
+    }
+
+    if (typeof window !== 'undefined' && getDeviceType === 'mobile') {
+      setShouldMobileLayoutRender(true);
     }
   }, [getDeviceType])
 
   const onHandleSlide = (action: unknown) => {
-    if (getDeviceType !== 'mobile') {
+    if (typeof window !== 'undefined' && getDeviceType !== 'mobile') {
       if (action === 'back') {
         setAnimateValue(200)
         setCardOpenForDesktopTablet(false)
@@ -142,7 +145,7 @@ const CreatePOPage = () => {
 
 
   return (
-    <div className="grid h-full w-full relative overflow-x-hidden overflow-y-hidden grid-rows-[max-content,minmax(0,1fr)] pr-2">
+    <div suppressHydrationWarning className="grid h-full w-full relative overflow-x-hidden overflow-y-hidden grid-rows-[max-content,minmax(0,1fr)] pr-2">
       <div className="flex h-[50px] w-full items-center justify-start gap-x-[5px]">
         <MenuBar />
         <span className="h-max w-full desktop:text-[24px] mobile:text-[16px] tablet:text-[16px] font-isb font-[500]">Active Cargo List</span>
@@ -176,7 +179,7 @@ const CreatePOPage = () => {
           transition="0.1s linear"
           initial={true}
         >
-          {isCardOpenForDesktopTablet && (
+          {typeof window !== 'undefined' && isCardOpenForDesktopTablet && (
             <div className="desktop:flex tablet:flex w-full justify-center mobile:hidden">
               <div className="desktop:w-[400px] tablet:w-[400px] desktop:h-max">
                 <GenericCard title="New Cargo">
@@ -201,9 +204,13 @@ const CreatePOPage = () => {
           </div>
         )}
       </div>
+      
+     
+      
       <SlideTransition ref={toggleSlideRef} direction="bottom">
-        {getDeviceType !== 'undefined' && getDeviceType === 'mobile' && (
-          <CargoInputComponent title="New Cargo" close={onHandleSlide} />
+        
+        {shouldMobileLayoutRender && (
+        <CargoInputComponent title="New Cargo" close={onHandleSlide} />
         )}
       </SlideTransition>
     </div>
