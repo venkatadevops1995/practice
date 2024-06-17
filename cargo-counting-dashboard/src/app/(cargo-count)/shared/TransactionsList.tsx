@@ -7,6 +7,7 @@ import useQueryParamsFilterHook from "~/app/hooks/useQueryParamsFilterHooks";
 import React from "react";
 import useDeviceType from "~/app/hooks/useDeviceTypeHook";
 import TransctionCard from './Cards'
+import { Image } from "@chakra-ui/react";
 
 const TransactionList = ({ responseData, isActiveJobs }: { responseData: POResponseType[], isActiveJobs?: boolean }) => {
 
@@ -51,7 +52,17 @@ const TransactionList = ({ responseData, isActiveJobs }: { responseData: PORespo
                         <TransctionCard isActiveJobs={isActiveJobs} key={i} data={co} />
                     )) : (
 
-                        <NoRecordsFound>{isActiveJobs ?  'No Jobs Found!'   : 'No Records Found!'}</NoRecordsFound>
+                        <NoRecordsFound>
+                            <div className="flex flex-col justify-center gap-y-2">
+                            {
+                                isActiveJobs &&  <Image src="/images/create_job.svg" alt="create job"/>
+                            }
+                            {
+                               isActiveJobs ?  <p className=" text-[14px] text-center">No, Active Cargo counting at the moment </p>   : <p className="font-isb text-center text-[14px]">No Records Found!</p>
+                            }
+                            </div>
+
+                        </NoRecordsFound>
                     )}
                     </div>
                 </div>
