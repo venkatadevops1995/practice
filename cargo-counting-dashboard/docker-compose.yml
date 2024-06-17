@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  count-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: count-dashboard
+    ports:
+      - '3002:3002'
+    volumes:
+      - .:/count-dashboard
+      - /count-dashboard/node_modules
