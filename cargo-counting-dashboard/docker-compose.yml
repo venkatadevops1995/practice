@@ -1,13 +1,15 @@
-version: '3.5'
-
+# docker-compose
+version: '3.7'
 services:
   count-dashboard:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: count-dashboard
+    container_name: 'nekkanti-dashboard-container'
+    init: true
+    build: .
     ports:
-      - '3002:3002'
+      - 3002:3002
+    working_dir: /count-dashboard
     volumes:
-      - .:/count-dashboard
-      - /count-dashboard/node_modules
+      - ./:/count-dashboard
+    image: nekkanti-dashboardv1-image
+ 
+

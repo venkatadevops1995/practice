@@ -22,7 +22,8 @@ COPY . .
 RUN npm run postinstall
 
 RUN npm run db:push
-RUN npm run build
+#RUN npm run build
+RUN npx prisma migrate dev --name init
 # If you are using Yarn, uncomment the following line and comment the previous line
 # RUN yarn build
 
@@ -30,6 +31,6 @@ RUN npm run build
 EXPOSE 3002
 
 # Start the Next.js server
-CMD ["make", "run-prod"]
+CMD  ["make", "run-dev"]
 # If you are using Yarn, uncomment the following line and comment the previous line
 # CMD ["yarn", "start"]
