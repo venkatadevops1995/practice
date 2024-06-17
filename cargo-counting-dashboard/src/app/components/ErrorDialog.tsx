@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { type IMessageBoxEmitter, type MessageBoxProps, MessageBoxTypeEnum } from '../typings/app-typings';
+import { type IMessageBoxEmitter, type MessageBoxProps, MessageBoxTypeEnum, MessageIconTypeEnum } from '../typings/app-typings';
 import { flattenObject, isPropEmpty } from '../utils/utilfunctions';
 import MessageBox from './MessageBox';
 import { useApplicationContext } from '../context';
@@ -31,6 +31,7 @@ const ErrorDialog = () => {
 
     setDialogDetails({
       type: MessageBoxTypeEnum.MESSAGE_BOX,
+      iconType: MessageIconTypeEnum.ERROR,
       title: 'Oops!',
       content: `Failed with server error code (${data?.status ?? data?.statusCode}), see console for error details`,
     });

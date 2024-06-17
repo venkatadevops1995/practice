@@ -11,11 +11,8 @@ import React, {
 } from "react";
 import { type POResponseType, AppEventEnum } from "~/pages/api/api-typings";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import HttpLoader from "./components/Loader";
 import ErrorDialog from "./components/ErrorDialog";
-import initWebsocketConnections from "./websocket/websocket-connection";
 import LoaderProvider from "./LoaderProvider";
-import { useJustandStore } from "./justand";
 
 
 export type GlobalState = {

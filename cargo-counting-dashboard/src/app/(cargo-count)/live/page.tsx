@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Image, useToast } from "@chakra-ui/react";
 import CountCard from "./CountCard";
 import { AppEventEnum, type PORequestType, type POResponseType } from "~/pages/api/api-typings";
@@ -16,9 +16,12 @@ import useHttpClientHandler from "~/app/hooks/useHttpLoader";
 import GoBackBtn from '~/app/components/BackBtn'
 import useWebSocketConnectionHook from "~/app/hooks/useWebsocketHook";
 import { type AckEventType } from "../typings/cargo-typings";
+import { useJustandStore } from "~/app/justand";
 
 const CargoLivePage = () => {
   const { state, dispatch } = useApplicationContext()
+  const  {onWebSocketClear} = useJustandStore()
+
   const toast = useToast();
   const { setLoader, setError } = useHttpClientHandler()
   const [getCargoEvent, setCargoEvent] = useState<POResponseType>();
@@ -137,12 +140,17 @@ const CargoLivePage = () => {
   }
 
 
+  useEffect(()=>{
+      return  ()=> {
+       onWebSocketClear(null)
+    }
+  },[])
 
   // Subscripbe for live count
   useWebSocketConnectionHook(AppEventEnum.LIVE_COUNT, (data) => onLiveEvent(data as POResponseType));
     const onAckEvent = (data: AckEventType) => {
       toast({
-        title: `${data?.message} for job ${data?.job_id}`,
+        title: `${data?.message}`,
         position: 'top',
         isClosable: true,
         variant: '',
@@ -153,6 +161,10 @@ const CargoLivePage = () => {
         }
       })
   }
+
+
+
+  
   useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEvent);
 
 

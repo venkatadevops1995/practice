@@ -22,7 +22,7 @@ const CountCard = ({liveData}:{liveData:POResponseType | undefined}) => {
           <span className="text-[var(--app-text-clr)] font-isb opacity-[0.6] text-[clamp(12px,0.5vw,14px)]">
             Purchage Order Number
           </span>
-          <span className="text-[var(--app-text-clr)] font-isb  text-[clamp(18px,1vw,20px)] font-semibold">
+          <span className="text-[var(--app-text-clr)] font-isb  text-[clamp(20px,1vw,22px)] font-semibold">
             {getLiveData?.poNumber ?? getLiveData?.po_number ?? '--'}
           </span>
         </div>

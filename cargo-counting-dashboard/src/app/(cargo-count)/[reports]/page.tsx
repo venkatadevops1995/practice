@@ -12,6 +12,9 @@ const prisma = new PrismaClient();
 const ReportPage = async () => { 
   //  await useCheckCargoLiveFromServer()
       const getPoCounts = await prisma.cargoCount.findMany({
+        orderBy: {
+           startAt: 'desc'
+        }
 }) as unknown as POResponseType[];
     
 

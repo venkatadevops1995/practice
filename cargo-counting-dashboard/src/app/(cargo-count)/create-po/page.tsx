@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Box, Image, useToast } from '@chakra-ui/react'
 import MenuBar from './Menubar'
 import SlideTransition from '../../components/SlideTransition'
@@ -20,6 +20,7 @@ import { getAllActiveJobs } from '../_RequestHandlers/create-po-request-handler'
 import ActiveJobsList from '../shared/ActiveJobs'
 import useWebSocketConnectionHook from '~/app/hooks/useWebsocketHook';
 import { type AckEventType } from '../typings/cargo-typings';
+import { useJustandStore } from '~/app/justand';
 
 const CreatePOPage = () => {
 
@@ -28,6 +29,8 @@ const CreatePOPage = () => {
     boolean
   >(false)
   const { dispatch } = useApplicationContext()
+  const  {onWebSocketClear} = useJustandStore()
+
   const { setLoader, setError } = useHttpClientHandler()
   const toast = useToast();
   const [shouldMobileLayoutRender, setShouldMobileLayoutRender] = useState<boolean>(false);
@@ -127,10 +130,16 @@ const CreatePOPage = () => {
     }
   }
 
+    useEffect(()=>{
+      return  ()=> {
+       onWebSocketClear(null)
+    }
+  },[])
+
   // Ack event
   const onAckEvent = (data: AckEventType) => {
       toast({
-        title: `${data?.message} for job ${data?.job_id}`,
+        title: `${data?.message}`,
         position: 'top',
         isClosable: true,
         variant: '',
@@ -141,6 +150,10 @@ const CreatePOPage = () => {
         }
       })
   }
+
+
+
+
   useWebSocketConnectionHook(AppEventEnum.ACK_EVENT, onAckEvent);
 
   return (

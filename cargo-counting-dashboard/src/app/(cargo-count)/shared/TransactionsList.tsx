@@ -51,7 +51,7 @@ const TransactionList = ({ responseData, isActiveJobs }: { responseData: PORespo
                         <TransctionCard isActiveJobs={isActiveJobs} key={i} data={co} />
                     )) : (
 
-                        <NoRecordsFound>No Record Found!</NoRecordsFound>
+                        <NoRecordsFound>{isActiveJobs ?  'No Jobs Found!'   : 'No Records Found!'}</NoRecordsFound>
                     )}
                     </div>
                 </div>
