@@ -1,0 +1,25 @@
+version: '3'
+services:
+    docker-registrycommandline:
+        image: registry:2
+        volumes:
+          - "/home/DHUB/docker_registry:/var/lib/registry"
+        ports:
+          - "8086:5000"
+        restart: always
+
+    docker-registrygraphicaluser:
+        image: parabuzzle/craneoperator:latest
+        ports:
+          - "5000:80"
+        environment:
+          - REGISTRY_HOST=localhost
+          - REGISTRY_PORT=8086
+          - REGISTRY_PROTOCOL=http
+          - SSL_VERIFY=false
+          - USERNAME=atai.user
+          - PASSWORD=welcome@atai
+        restart: always
+        depends_on:
+          - docker-registrycommandline
+
